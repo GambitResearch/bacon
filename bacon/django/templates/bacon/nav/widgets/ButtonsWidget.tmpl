@@ -1,0 +1,11 @@
+{% extends "bacon/nav/_widget.tmpl" %}
+
+{% block widget_body %}
+
+{% load bacon_nav %}
+
+{% for b in widget.buttons %}
+	{% button b widget panel %}
+{% endfor %}
+
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "bacon/nav/_widget.tmpl" %}
+
+{% block widget_body %}
+	<script type="text/javascript">
+	 try { bacon; } catch(e) { bacon = {}; }
+	 bacon.{{ unique }} = function () {
+		 var urls = [
+			 "{{ urls.0|escapejs }}",
+			 "{{ urls.1|escapejs }}"
+		 ];
+
+		 var value = document.querySelector('#{{ unique }}').value;
+		 var url = urls[value ? 1 : 0 ];
+		 document.location = url.replace('__PLACEHOLDER__', value);
+	 }
+	</script>
+	<div class="{{ unique }}">
+		<input id="{{ unique }}" value="{{ value }}"
+			   type="text" class="string_filter"
+			   size="8"
+			   onchange="bacon.{{ unique }}()" />
+	</div>
+{% endblock %}

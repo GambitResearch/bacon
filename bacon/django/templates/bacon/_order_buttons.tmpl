@@ -1,0 +1,9 @@
+{% for url, title, face in buttons %}
+	{% if url %}
+	<a class="nav button" title="Order" href="{{ url }}">
+		<span>{{ face }}</span>
+	</a>
+	{% else %}
+	<span class="button current-order">{{ face }}</span>
+	{% endif %}
+{% endfor %}

@@ -1,0 +1,14 @@
+{% load bacon_tags %}
+<div class="bacon-pager">
+	{% for label, n, current in table.pages %}
+		{% ifnotequal n None %}
+		<a class="nav page{{ forloop.last|yesno:" last," }}"
+				title="Go to page {{ n|add:"1" }}"
+				href="{% to_page_url table n %}">
+			<span>{{ label }}</span>
+		</a>
+		{% else %}
+		<span class="label{{ forloop.last|yesno:" last," }}{{ current|yesno:" current," }}">{{ label }}</span>
+		{% endifnotequal %}
+	{% endfor %}
+</div>

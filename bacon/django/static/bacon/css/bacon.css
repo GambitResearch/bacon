@@ -1,0 +1,164 @@
+table.bacon td.measure {
+	text-align: right;
+	white-space: nowrap;
+}
+
+.bacon a.button,
+.bacon-panel a.button {
+	color: blue;
+}
+
+div.bacon-panel {
+	border: 1px solid #888;
+	margin-bottom: 0.5em;
+	margin-right: 0.5em;
+	padding-left: 0.25em;
+	padding-right: 0.25em;
+}
+div.bacon-panel div.panel-title {
+	font-weight: bold;
+	font-size: small;
+}
+
+div.bacon-panel span.bacon-filter-value {
+	cursor: pointer;
+}
+
+div.bacon-panel span.bacon-filter-value.bacon-loading {
+	color: #666;
+	cursor: wait !important;
+}
+
+div.bacon-toolbar {
+	margin-bottom: 0.5em;
+}
+
+div.bacon-toolbar img,
+div.bacon-widgets img.button
+{
+	border: none;
+	vertical-align: top;
+}
+div.bacon-toolbar .tool {
+	margin-right: 3px;
+}
+
+table.bacon {
+	border-collapse: collapse;
+	border: 2px solid #888;
+	margin-bottom: 0.5em;
+}
+table.bacon td {
+	border: 1px dotted #888;
+	padding: 0 4px;
+}
+table.bacon th {
+	padding: 0 4px;
+}
+table.bacon tr.totals,
+table.bacon td.total {
+	font-weight: bold;
+}
+table.bacon .button,
+table.bacon span.label {
+	margin-right: 0.25em;
+}
+table.bacon a.button,
+div.bacon-panel a.button {
+	text-decoration: none;
+	font-weight: normal;
+}
+table.bacon .current-order {
+	font-weight: bold;
+	color: maroon;
+}
+table.bacon td.empty-table {
+	border: 2px solid #888;
+}
+
+table.bacon-pivot tr.pivot th ,
+table.bacon-pivot tr.titles th ,
+table.bacon-values tr.titles th {
+	border-right: 2px solid #888;
+	white-space: nowrap;
+}
+table.bacon-pivot tr.pivot th {
+	border-bottom: 1px dotted #888;
+}
+table.bacon-pivot tr.pivot th.label {
+	border-bottom: 2px solid #888;
+	border-right: 1px dotted #888;
+}
+
+div.bacon-axes table.dimensions td,
+div.bacon-widgets table.widgets td
+{
+	padding: 0.25em;
+	padding-left: 0px;
+}
+div.bacon-axes .dimension .name,
+div.bacon-widgets .widget .label {
+	text-align: right;
+}
+div.bacon-axes span.button,
+div.bacon-widgets span.button
+{
+	border: 1px solid #888;
+	padding: 0.15em 0.3em;
+	margin-right: 0.5em;
+	background-color: #eee;
+}
+div.bacon-axes .button a,
+div.bacon-widgets .button a
+{
+	text-decoration: none;
+}
+div.bacon-panel .disabled {
+	color: #888;
+}
+
+div.bacon-pager a.page,
+div.bacon-pager span.label {
+	text-decoration: none;
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+	border-right: 1px dotted #888;
+}
+html div.bacon-pager a.last,
+html div.bacon-pager span.last {
+	border-right: none;
+}
+div.bacon-pager span.label {
+	color: #888;
+}
+div.bacon-pager span.current {
+	font-weight: bolder;
+	color: maroon;
+}
+
+img.bacon-plot {
+	margin-bottom: 2px;
+	margin-right: 2px;
+}
+
+.bacon-throbber,
+.bacon-error {
+	position: fixed;
+	left: 30%;
+	right: 30%;
+	top: 0.5em;
+	text-align: center;
+}
+
+.bacon-throbber #bacon-throbber {
+	padding: 0pt 1em;
+	color: black;
+	background-color: yellow;
+}
+
+.bacon-error #bacon-error  {
+	padding: 0pt 1em;
+	background-color: red;
+	color: white;
+	font-weight: bold;
+}

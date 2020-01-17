@@ -1,0 +1,83 @@
+{% load bacon_tags %}
+{% load bacon_nav %}
+{% spaceless %}
+
+<div style="float: left;">
+
+<div class="bacon-panel bacon-axes">
+	<div class="panel-title">Available axes:</div>
+	<table class="dimensions">
+	{% for label, query in panel.nav.iter_expansions %}
+		{% ifchanged label.dimension %}
+			<tr class="dimension">
+				<td class="name">{{ label.dimension|default_if_none:"Other axes" }}:</td>
+				<td class="axes">
+		{% endifchanged %}
+		<span class="axis button">
+			{% if query %}
+				<a class="nav label" title="Expand axis"
+					href="{% query_url panel query %}">{{ label }}</a>
+			{% else %}
+				<span class="disabled">{{ label }}</span>
+			{% endif %}
+		</span>
+		{% if forloop.last %}
+			</td></tr>
+		{% endif %}
+	{% endfor %}
+	</table>
+</div>
+
+</div>
+
+<div style="float: left;">
+
+{% if panel.widgets %}
+	<div class="bacon-panel bacon-widgets">
+		<table class="widgets">
+		{% for w in panel.widgets %}
+			{% widget panel w %}
+		{% endfor %}
+		</table>
+	</div>
+{% endif %}
+
+{% if panel.nav.iter_filters %}
+	<div class="bacon-panel bacon-filters">
+		<div class="panel-title">Filtered by:</div>
+		{% for filter in panel.nav.iter_filters %}
+			<div class="bacon-filter">
+				<a class="nav button" title="Drop filter"
+						href="{% query_url panel filter.query_without %}">
+					<span>&#10005;</span>
+				</a>
+				{% if filter.op in MULTI_ARG_OPS %}
+					{{ filter.pretty_name }} {{ filter.pretty_op }} {{ filter.pretty_value }}
+				{% else %}
+					{{ filter.pretty_name }} {{ filter.pretty_op }} <span class="bacon-filter-value" data-name="{{ filter.name }}" data-current-value="{{ filter.str_value }}" data-op="{{ filter.op }}">{{ filter.pretty_value }}</span>
+				{% endif %}
+			</div>
+		{% endfor %}
+	</div>
+{% endif %}
+
+{% if panel.nav.hidden_values %}
+	<div class="bacon-panel bacon-hidden-values">
+		<div class="panel-title">Hidden values:</div>
+		{% for label, query in panel.nav.hidden_values %}
+			<div class="bacon-hidden-value">
+				<a class="nav button" title="Show again"
+						href="{% query_url panel query %}">
+					<span>&#10005;</span>
+				</a>
+				{{ label }}
+			</div>
+		{% endfor %}
+	</div>
+{% endif %}
+
+</div>
+
+<div style="clear: both;"></div>
+
+{% endspaceless %}

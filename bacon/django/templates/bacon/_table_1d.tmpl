@@ -1,0 +1,87 @@
+{% load bacon_tags %}
+{% spaceless %}
+<table class="bacon bacon-values">
+
+	<tr class="titles">
+		{% if table.has_no_column %}
+		<td class='empty-table'>Click on an axis to filter</td>
+		{% endif %}
+
+		{% for t in table.widget_titles %}
+		<th class="widget">
+			{{ t }}
+		</th>
+		{% endfor %}
+
+		{% for t in table.label_titles %}
+		<th class="label">
+			{% if forloop.first %}
+				{% reset_order_button table %}
+			{% endif %}
+
+			{% if t.allow_pivot %}
+			<a class="nav button" title="Pivot on axis"
+					href="{% pivot_url table t %}">
+				<span>&#8599;</span>
+			</a>
+			{% endif %}
+
+			<span class="label">{{ t }}</span>
+			{% drop_axis_button table t %}
+		</th>
+		{% endfor %}
+
+		{% for t in table.value_titles %}
+		<th class="value">
+			{% order_buttons table t %}
+			<span class="label">{{ t }}</span>
+			<a class="nav button" title="Hide value"
+					href="{% hide_value_url table t %}">
+				<span>&#10005;</span>
+			</a>
+		</th>
+		{% endfor %}
+	</tr>
+
+	{% for row in table.rows %}
+	<tr class="values {{ row.slice.cls }}">
+		{% for title in table.widget_titles %}
+		<td class="widget">
+			{% table_row_widgets table title row %}
+		</td>
+		{% endfor %}
+
+		{% for label in row.labels %}
+		<td class="{{ label.cls }}">
+			<a class="nav" title="Filter by value"
+				href="{% filter_url table label %}">{{ label }}</a>
+		</td>
+		{% endfor %}
+
+		{% for v in row.values %}
+		<td class="{{ v.cls }}">{{ v.pretty|default:"&#160;" }}</td>
+		{% endfor %}
+	</tr>
+	{% endfor %}
+
+	{% if table.totals %}
+		<tr class="totals">
+			{% for t in table.widget_titles %}
+				<td class="label">&#160;</td>
+			{% endfor %}
+
+			{% for t in table.label_titles %}
+				<td class="label">&#160;</td>
+			{% endfor %}
+
+			{% for v in table.totals %}
+			<td class="{{ v.cls }}">{{ v.pretty|default:"&#160;" }}</td>
+			{% endfor %}
+		</tr>
+	{% endif %}
+
+</table>
+
+{% pager table %}
+
+{% endspaceless %}

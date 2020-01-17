@@ -1,0 +1,19 @@
+Bacon - slice it and dice it!
+=============================
+
+Bacon is a library implementing an OLAP cube. It operates on a sequence of
+Python objects of every type, exposing generic attributes called "labels" and
+numeric attributes called "measures" and allows an user to perform queries,
+filtering and aggregating along labels and accumulating measures.
+
+Bacon offers facilities to "drill down" interactively, generating a query from a
+previous query, reducing the dimension of the dataset until it can be
+visualized, e.g. to two dimensions to show on a grid or one dimension for a
+graph plotting.
+
+Bacon is designed to operate on pre-aggregated data with the assumption that the
+dataset will fit in memory: it is database-agnostic and doesn't try to optimize
+database queries.
+
+Bacon doesn't deal with Idols of the Mind, nor with figurative painting.
+

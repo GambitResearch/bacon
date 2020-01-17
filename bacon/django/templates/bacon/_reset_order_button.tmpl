@@ -1,0 +1,7 @@
+{% if url %}
+<a class="nav button" title="Clear ordering" href="{{ url }}">
+	<span>&#8659;</span>
+</a>
+{% else %}
+<span class="button current-order">&#8659;</span>
+{% endif %}

@@ -1,0 +1,5 @@
+{% if image_url %}
+<a href="{{ url }}"><img class="button" src="{{ image_url }}" alt="{{ label }}" title="{{ label }}" /></a>
+{% else %}
+<a href="{{ url }}"><span class="button">{{ label }}</span></a>
+{% endif %}

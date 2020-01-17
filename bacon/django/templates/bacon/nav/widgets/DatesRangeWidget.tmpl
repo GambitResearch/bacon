@@ -1,0 +1,46 @@
+{% extends "bacon/nav/_widget.tmpl" %}
+
+{% block widget_body %}
+<script type="text/javascript">
+	try { bacon; } catch(e) { bacon = {}; }
+
+	bacon.{{ unique }} = function () {
+		var urls = [
+			"{{ urls.0|escapejs }}",
+			"{{ urls.1|escapejs }}",
+			"{{ urls.2|escapejs }}",
+			"{{ urls.3|escapejs }}" ];
+
+		{% if widget.toolkit == "jquery" %}
+			var dfrom = $("#{{ unique }}_from").val().replace(/(..)\/(..)\/(....)/, "$3-$2-$1");
+			var dto = $("#{{ unique }}_to").val().replace(/(..)\/(..)\/(....)/, "$3-$2-$1");
+		{% endif %}
+		{% if widget.toolkit == "prototype" %}
+			var dfrom = $("{{ unique }}_from").value.replace(/(..)\/(..)\/(....)/, "$3-$2-$1");
+			var dto = $("{{ unique }}_to").value.replace(/(..)\/(..)\/(....)/, "$3-$2-$1");
+		{% endif %}
+
+		var url = urls[(dfrom ? 1 : 0) + (dto ? 2 : 0)];
+		url = url.replace("__from__", dfrom).replace("__to__", dto);
+
+		document.location = url;
+	}
+
+	{% if widget.toolkit == "jquery" %}
+		$(document).ready(function () {
+			$('div.{{ unique }} input.date_range')
+				.datepicker({dateFormat: 'dd/mm/yy'});
+		})
+	{% endif %}
+
+</script>
+<div class="{{ unique }}">
+	From&#160;<input id="{{ unique }}_from" value="{{ value_from }}"
+		type="text" class="date_range" maxlength="10" size="8"
+		datepicker="true" datepicker_format="DD/MM/YYYY"
+		onchange="bacon.{{ unique }}()" />
+	To&#160;<input id="{{ unique }}_to" value="{{ value_to }}"
+		type="text" class="date_range" maxlength="10" size="8"
+		datepicker="true" datepicker_format="DD/MM/YYYY"
+		onchange="bacon.{{ unique }}()" /></div>
+{% endblock %}

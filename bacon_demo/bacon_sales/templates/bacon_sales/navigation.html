@@ -1,0 +1,15 @@
+{% load bacon_tags %}
+
+<html>
+	<head>
+		<link rel="stylesheet" href="{{ MEDIA_URL }}bacon/css/bacon.css" type="text/css" />
+		<style>
+			tr.weekday-6, tr.weekday-7 { background-color: yellow; }
+		</style>
+	</head>
+	<body>
+		{% plot_tag plot %}
+		{% nav_panels table.nav %}
+		{% table table %}
+	</body>
+</html>

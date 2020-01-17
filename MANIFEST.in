@@ -1,0 +1,3 @@
+recursive-include bacon/django/media *
+recursive-include bacon/django/static *
+recursive-include bacon/django/templates *

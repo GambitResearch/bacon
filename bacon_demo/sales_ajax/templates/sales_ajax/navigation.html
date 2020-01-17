@@ -1,0 +1,33 @@
+<html>
+	<head>
+		<link href="{{ MEDIA_URL }}bacon/css/bacon.css" rel="stylesheet" type="text/css" />
+		<script src="{{ MEDIA_URL }}lib/prototype.js" type="text/javascript"></script>
+		<script src="{{ MEDIA_URL }}bacon/js/prototype.js" type="text/javascript"></script>
+		<style type="text/css">
+			tr.weekday-6, tr.weekday-7 { background-color: yellow; }
+		</style>
+		<script type="text/javascript">
+			Event.observe(window, 'load', function() {
+				bacon.setNavigationFunction(function (query) {
+					var loader = new bacon.Loader(query);
+					loader.addImg('q', 'plot');
+					loader.addHTML('q', 'nav');
+					loader.addHTML('q', 'table');
+					loader.loadAll();
+				});
+				bacon.fixBackButton();
+				bacon.navigate();
+			});
+		</script>
+	</head>
+	<body>
+		{% if title %}
+			<h2>{{ title }}</h2>
+		{% endif %}
+		<span id="plot"></span>
+		<div id="nav"></div>
+		<div id="table"></div>
+		<div class="bacon-error"><span id="bacon-error"></span></div>
+		<div class="bacon-throbber"><span id="bacon-throbber">Loading...</span></div>
+	</body>
+</html>
