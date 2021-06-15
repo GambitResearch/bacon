@@ -9,8 +9,14 @@ import sys
 import time
 import logging
 
+# allow middleware to work with Django >= 2.0
+try:
+    from django.utils.deprecation import MiddlewareMixin
+except ImportError:
+    MiddlewareMixin = object
 
-class LoggingMiddleware(object):
+
+class LoggingMiddleware(MiddlewareMixin):
 	"""A middleware logging requests Apache/NCSA Combined Log format.
 
 	This logging middleware will log all requests as they go through.

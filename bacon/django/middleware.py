@@ -4,8 +4,14 @@ from django.conf import settings
 
 from bacon import errors
 
+# allow middleware to work with Django >= 2.0
+try:
+    from django.utils.deprecation import MiddlewareMixin
+except ImportError:
+    MiddlewareMixin = object
 
-class ErrorTo404Middleware(object):
+
+class ErrorTo404Middleware(MiddlewareMixin):
 	"""Middleware to handle application exceptions raised by bacon.
 
 	Let's convert them in 404. Either it is a bug in bacon (but bacon has none)
