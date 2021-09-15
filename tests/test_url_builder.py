@@ -36,6 +36,11 @@ class UrlQueryBuilderTestCase(unittest.TestCase):
 		query = CubeQuery().add_filter("foo", u"\u20ac")
 		self.assertEqual("f:foo:\u20ac", b.to_string(query, name='test'))
 
+	def test_invert(self):
+		b = self.get_test_builder()
+		query = CubeQuery().add_filter("foo", "bar", "eq").invert_filter("foo", "bar", "eq")
+                self.assertEqual(r"f:foo:ne:bar", b.to_string(query, name='test'))
+
 
 def test_suite():
 	return unittest.TestLoader().loadTestsFromName(__name__)
