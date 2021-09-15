@@ -24,17 +24,17 @@ class UrlQueryBuilderTestCase(unittest.TestCase):
 	def test_string(self):
 		b = self.get_test_builder()
 		query = CubeQuery().add_filter("foo", "bar").add_axis("baz")
-		self.assertEqual("f:foo=bar/a:baz", b.to_string(query, name='test'))
+		self.assertEqual("f:foo:bar/a:baz", b.to_string(query, name='test'))
 
 	def test_string_separators_in_values(self):
 		b = self.get_test_builder()
 		query = CubeQuery().add_filter("foo", "bar/baz").add_filter("qux", r"q\u:x")
-		self.assertEqual(r"f:foo=bar\/baz/f:qux=q\\u\:x", b.to_string(query, name='test'))
+		self.assertEqual(r"f:foo:bar\/baz/f:qux:q\\u\:x", b.to_string(query, name='test'))
 
 	def test_unicode(self):
 		b = self.get_test_builder()
 		query = CubeQuery().add_filter("foo", u"\u20ac")
-		self.assertEqual("f:foo=\xe2\x82\xac", b.to_string(query, name='test'))
+		self.assertEqual("f:foo:\u20ac", b.to_string(query, name='test'))
 
 
 def test_suite():
