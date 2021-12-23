@@ -1,6 +1,7 @@
 """CubeDef: an object that can describe how to navigate a dataset."""
 import pytz
 import re
+from calendar import day_name, month_name
 from datetime import date, datetime, timedelta
 from operator import attrgetter
 from six import string_types
@@ -737,6 +738,37 @@ class DatetimeTruncLabel(DatetimeHierarchyLabel, DatetimeDateTruncLabelMixin):
 		return "date_trunc('%s', %s)" % (self.SQL_DATE_FIELD, self._sql_expression)
 
 
+class DatetimePartLabel(DatetimeDateHierarchyLabelMixin):
+	"""
+	A 1-based field obtained by extracting some integer from a date.
+
+	Values are prepended with PREFIX when displayed.
+	"""
+	PREFIX = NotImplemented
+	MAX_VALUE = NotImplemented
+	SQL_DATE_FIELD = NotImplemented
+
+	def classify(self, date):
+		raise NotImplementedError()
+
+	def pretty(self, v, record=None):
+		return '%s%i' % (self.PREFIX, v)
+
+	def parse(self, s):
+		i = int(s)
+		if 1 <= i <= self.MAX_VALUE:
+			return i
+		else:
+			raise ValueError(i)
+
+	def unparse(self, v):
+		return str(v)
+
+	@property
+	def sql_expression(self):
+		return "date_part('%s', %s)::integer" % (self.SQL_DATE_FIELD, self._sql_expression)
+
+
 class YearLabelMixin(object):
 	SUFFIX = '_year'
 	DEFAULT_TITLE = 'Year'
@@ -757,6 +789,19 @@ class YearLabel(YearLabelMixin, DateTruncLabel):
 
 class DatetimeYearLabel(YearLabelMixin, DatetimeTruncLabel):
 	pass
+
+
+class ISOYearLabel(DatetimePartLabel):
+	SUFFIX = '_isoyear'
+	DEFAULT_TITLE = 'ISOYear'
+
+	SQL_DATE_FIELD = 'isoyear'
+	MAX_VALUE = float('inf')
+	PREFIX = 'ISO'
+
+	@staticmethod
+	def classify(date):
+		return date.isocalendar()[0]
 
 
 class MonthLabelMixin(object):
@@ -789,6 +834,22 @@ class MonthLabel(MonthLabelMixin, DateTruncLabel):
 
 class DatetimeMonthLabel(MonthLabelMixin, DatetimeTruncLabel):
 	pass
+
+
+class MonthOfYearLabel(DatetimePartLabel):
+	SUFFIX = '_moy'
+	DEFAULT_TITLE = 'MonthOfYear'
+
+	SQL_DATE_FIELD = 'month'
+	MAX_VALUE = 12
+
+	@staticmethod
+	def pretty(m, record=None):
+		return month_name[m]
+
+	@staticmethod
+	def classify(date):
+		return date.month
 
 
 class QuarterLabelMixin(object):
@@ -824,6 +885,19 @@ class DatetimeQuarterLabel(QuarterLabelMixin, DatetimeTruncLabel):
 	pass
 
 
+class QuarterNumLabel(DatetimePartLabel):
+	SUFFIX = '_quarternum'
+	DEFAULT_TITLE = 'QuarterNum'
+
+	SQL_DATE_FIELD = 'quarter'
+	MAX_VALUE = 4
+	PREFIX = 'Q'
+
+	@staticmethod
+	def classify(date):
+		return ((date.month - 1) // 3 * 3) + 1
+
+
 class WeekLabelMixin(object):
 	SUFFIX = '_week'
 	DEFAULT_TITLE = 'Week'
@@ -857,6 +931,22 @@ class WeekLabel(WeekLabelMixin, DateTruncLabel):
 
 class DatetimeWeekLabel(WeekLabelMixin, DatetimeTruncLabel):
 	pass
+
+
+class ISOWeekNumLabel(DatetimePartLabel):
+	"""
+	Use with ISOYearLabel, _not_ YearLabel!
+	"""
+	SUFFIX = '_isoweeknum'
+	DEFAULT_TITLE = 'ISOWeekNum'
+
+	SQL_DATE_FIELD = 'week'
+	MAX = 53
+	PREFIX = 'W'
+
+	@staticmethod
+	def classify(date):
+		return date.isocalendar()[1]
 
 
 class DayLabelMixin(object):
@@ -904,6 +994,19 @@ class DatetimeDayLabel(DayLabelMixin, DatetimeTruncLabel):
 	"""
 
 
+class DOYLabel(DatetimePartLabel):
+	SUFFIX = '_doy'
+	DEFAULT_TITLE = 'DayOfYear'
+
+	SQL_DATE_FIELD = 'doy'
+	MAX_VALUE = 366
+	PREFIX = 'D'
+
+	@staticmethod
+	def classify(date):
+		return date.isocalendar()[2]
+
+
 class HourLabel(DatetimeTruncLabel):
 	SUFFIX = '_hour'
 	DEFAULT_TITLE = 'Hour'
@@ -925,41 +1028,33 @@ class HourLabel(DatetimeTruncLabel):
 			return super(HourLabel, self).parse(s)
 
 
-class WeekdayLabel(DateHierarchyLabel):
+class WeekdayLabel(DatetimePartLabel):
 	SUFFIX = '_weekday'
 	DEFAULT_TITLE = 'Weekday'
-	DATETIME_FORMAT = '%Y-%m-%d'
 
-	def classify(self, d):
-		return d.isoweekday()
+	SQL_DATE_FIELD = 'isodow'
+	MAX_VALUE = 7
 
-	def parse(self, s):
-		try:
-			return int(s)
-		except ValueError as ex:
-			raise errors.DataError(str(ex))
+	@staticmethod
+	def pretty(d, record=None):
+		return day_name[(d + 6) % 7]
 
-	def unparse(self, v):
-		return ensure_unicode(v)
+	@staticmethod
+	def classify(date):
+		return date.isoweekday()
 
-	def pretty(self, d, record=None,
-		_labels={
-			1: u'Monday', date(2000, 1, 3): u'Monday',
-			2: u'Tuesday', date(2000, 1, 4): u'Tuesday',
-			3: u'Wednesday', date(2000, 1, 5): u'Wednesday',
-			4: u'Thursday', date(2000, 1, 6): u'Thursday',
-			5: u'Friday', date(2000, 1, 7): u'Friday',
-			6: u'Saturday', date(2000, 1, 8): u'Saturday',
-			7: u'Sunday', date(2000, 1, 2): u'Sunday',
-			None: u'Unknown'}):
-		return _labels[d]
 
-	@property
-	def sql_expression(self):
-		return (
-			"case when date_part('dow', %s)::int = 0 then 7 "
-			"else date_part('dow', %s)::int end" %
-			(self._sql_expression, self._sql_expression))
+class MonthdayLabel(DatetimePartLabel):
+	SUFFIX = '_monthday'
+	DEFAULT_TITLE = 'Monthday'
+
+	SQL_DATE_FIELD = 'day'
+	MAX_VALUE = 31
+	PREFIX = ''
+
+	@staticmethod
+	def classify(date):
+		return date.day
 
 
 class Measure(Label):
