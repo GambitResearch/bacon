@@ -282,7 +282,8 @@ class Label(object):
 			self.unparse = unparse
 
 		self.acc = acc or accs.Group
-		self.key = key or (lambda _: "")
+		if key is not None:
+			self.key = key
 		self.reverse = reverse
 
 		self.child_of = child_of
@@ -299,6 +300,13 @@ class Label(object):
 		self.django_prefetch_related = django_prefetch_related
 
 		self.rank = 0
+
+	def key(self, value):
+		# Generic key function for nullable types which puts nulls first.
+		if value is None:
+			return ()
+		else:
+			return (value,)
 
 	def get_filter_op(self):
 		return 'eq'

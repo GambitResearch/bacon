@@ -622,7 +622,7 @@ class Slice(object):
 		il = list(enumerate(labels))
 		il.reverse()
 		for i, l in il:
-			key = (lambda vs: l.key(vs[i])) if l.key is not None else None
+			key = lambda vs: l.key(vs[i])
 			values.sort(key=key, reverse=l.reverse)
 
 		for vs in values:
