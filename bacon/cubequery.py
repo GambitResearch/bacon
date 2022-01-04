@@ -2,6 +2,27 @@
 
 from operator import itemgetter
 
+_op_antonym_pairs = [
+		('eq', 'ne'),
+		('gt', 'le'),
+		('lt', 'ge'),
+		('in', 'ni'),
+		('hasall', 'hasnotall'),
+		('hasnone', 'hasany'),
+		('subsetof', 'notsubsetof'),
+		('supersetof', 'notsupersetof'),
+		('disjointfrom', 'intersects'),
+		('equals', 'notequals'),
+		('match', 'nmatch'),
+]
+
+_op_antonym = {op: antonym for op, antonym in _op_antonym_pairs}
+_op_antonym.update({antonym: op for op, antonym in _op_antonym_pairs})
+_op_antonym['hasonly'] = 'notequals'
+
+def invert_op(op):
+	return _op_antonym[op]
+
 
 class CubeQuery(object):
 	def __init__(self):
@@ -125,6 +146,14 @@ class CubeQuery(object):
 			rv._filters = [f for f in rv._filters if f[0] != name]
 		else:
 			rv._filters = [f for f in rv._filters if f != (name, operator, value)]
+		return rv
+
+	def invert_filter(self, name, value, operator):
+		"""Return a new `CubeQuery` with filter inverted."""
+		rv = self.copy()
+		original = (name, operator, value)
+		inverted = (name, invert_op(operator), value)
+		rv._filters = [inverted if f == original else f for f in rv._filters]
 		return rv
 
 	def get_range(self, axis):

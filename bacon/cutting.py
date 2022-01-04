@@ -824,6 +824,7 @@ _op_map = {
 	'in': is_in, 'ni': is_not_in,
 	'hasall': hasall, 'hasnone': hasnone,
 	'hasany': hasany, 'hasonly': hasonly,
+	'hasnotall': lambda a, b: not hasall(a, b),
 	'subsetof': issubset, 'notsubsetof': lambda a, b: not issubset(a, b),
 	'supersetof': issuperset, 'notsupersetof': lambda a, b: not issuperset(a, b),
 	'disjointfrom': disjoint, 'intersects': lambda a, b: not disjoint(a, b),

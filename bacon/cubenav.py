@@ -19,7 +19,7 @@ CurrentFilter = namedtuple('CurrentFilter', """
 	name pretty_name
 	op pretty_op
 	value pretty_value str_value
-	query_without""".split())
+	query_without query_invert""".split())
 
 
 class Navigator(object):
@@ -128,7 +128,8 @@ class Navigator(object):
 					pretty_name=text_type(label),
 					pretty_op=self._pretty_op.get(op, op),
 					pretty_value=pretty_value,
-					query_without=query.remove_filter(name, value, op))
+					query_without=query.remove_filter(name, value, op),
+					query_invert=query.invert_filter(name, value, op))
 
 	_pretty_op = {
 		'eq': '=', 'ne': 'is not',
