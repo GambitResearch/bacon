@@ -7,7 +7,6 @@ try:
 	from itertools import imap
 	text_type = unicode
 except ImportError:
-	imap = map
 	text_type = str
 
 from bacon.cubequery import CubeQuery
@@ -69,7 +68,7 @@ class Navigator(object):
 		name = label.name
 
 		# labels used by the query
-		used_labels = set(imap(self._cubedef.get_label, query.axes))
+		used_labels = set(map(self._cubedef.get_label, query.axes))
 
 		# If we already used it, no way
 		if label in used_labels:
@@ -219,11 +218,11 @@ class Navigator(object):
 
 	@property
 	def axes(self):
-		return map(self._cubedef.get_label, self.query.axes)
+		return list(map(self._cubedef.get_label, self.query.axes))
 
 	@property
 	def pivot(self):
-		return map(self._cubedef.get_label, self.query.pivot)
+		return list(map(self._cubedef.get_label, self.query.pivot))
 
 	def set_pivot(self, label):
 		query = self.query

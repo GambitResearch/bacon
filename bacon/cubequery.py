@@ -63,7 +63,7 @@ class CubeQuery(object):
 
 	@property
 	def all_values(self):
-		return map(itemgetter(0), self._values)
+		return list(map(itemgetter(0), self._values))
 
 	@property
 	def hidden_values(self):

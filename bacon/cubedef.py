@@ -187,17 +187,17 @@ class CubeDef(object):
 		"""Return the list of labels connected to *name*."""
 		for names in nx.connected_components(self._graph.to_undirected()):
 			if name in names:
-				return map(self.get_label, names)
+				return list(map(self.get_label, names))
 
 	def get_ancestors(self, name):
 		"""Return the list of labels ancestors of *name* in its dimension.
 		"""
-		return map(self.get_label, ancestors(self._graph, name))
+		return list(map(self.get_label, ancestors(self._graph, name)))
 
 	def get_descendants(self, name):
 		"""Return the list of labels descendants of *name* in its dimension.
 		"""
-		return map(self.get_label, descendants(self._graph, name))
+		return list(map(self.get_label, descendants(self._graph, name)))
 
 
 class Field(object):
