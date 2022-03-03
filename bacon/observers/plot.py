@@ -53,9 +53,9 @@ class TimePlotData(Plot):
 			raise ValueError("no data found: what should I do?")
 
 		data.sort()
-		self._t = map(itemgetter(0), data)
+		self._t = list(map(itemgetter(0), data))
 
-		values = map(itemgetter(1), data)
+		values = list(map(itemgetter(1), data))
 		self._x = dict((m.name, [a.get() for a in map(itemgetter(m.name), values)])
 			for m in measures)
 
