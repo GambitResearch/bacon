@@ -35,6 +35,10 @@ def render_nav_json(panel):
 			('label', u"%s %s %s" % (f.pretty_name, f.pretty_op, f.pretty_value)),
 			('drop_url', panel.get_url(f.query_without)),
 			('invert_url', panel.get_url(f.query_invert)),
+			('related_urls', OrderedDict([
+				pretty_op: panel.get_url(query)
+				for pretty_op, query in f.query_related.items()
+			),
 		]))
 
 	for label, query in panel.nav.hidden_values():

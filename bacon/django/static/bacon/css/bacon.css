@@ -33,6 +33,24 @@ div.bacon-toolbar {
 	margin-bottom: 0.5em;
 }
 
+div.bacon-dropper-activator {
+	display: inline-block;
+}
+
+div.bacon-dropper-activator div.bacon-dropper {
+	background: white;
+	visibility: hidden;
+	position: absolute;
+}
+
+div.bacon-dropper-activator:hover div.bacon-dropper {
+	visibility: visible;
+}
+
+div.bacon-dropper p {
+	margin: 0;
+}
+
 div.bacon-toolbar img,
 div.bacon-widgets img.button
 {
