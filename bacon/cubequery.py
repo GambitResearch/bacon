@@ -148,13 +148,17 @@ class CubeQuery(object):
 			rv._filters = [f for f in rv._filters if f != (name, operator, value)]
 		return rv
 
-	def invert_filter(self, name, value, operator):
-		"""Return a new `CubeQuery` with filter inverted."""
+	def swap_filter(self, name, value, operator, new_operator):
+		"""Return a new `CubeQuery` with filter operator changed."""
 		rv = self.copy()
 		original = (name, operator, value)
-		inverted = (name, invert_op(operator), value)
-		rv._filters = [inverted if f == original else f for f in rv._filters]
+		replacement = (name, new_operator, value)
+		rv._filters = [replacement if f == original else f for f in rv._filters]
 		return rv
+
+	def invert_filter(self, name, value, operator):
+		"""Return a new `CubeQuery` with filter inverted."""
+		return self.swap_filter(name, value, operator, invert_op(operator))
 
 	def get_range(self, axis):
 		"""Return start and end values of the range of an axis."""
