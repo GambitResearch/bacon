@@ -20,9 +20,27 @@ _op_antonym = {op: antonym for op, antonym in _op_antonym_pairs}
 _op_antonym.update({antonym: op for op, antonym in _op_antonym_pairs})
 _op_antonym['hasonly'] = 'notequals'
 
+_op_sets = [
+	set(['eq', 'ne', 'gt', 'lt', 'ge', 'le']),
+	set(['in', 'ni']),
+	set([
+		'hasall', 'hasnotall', 'hasnone', 'hasany',
+		'subsetof', 'notsubsetof',
+		'supersetof', 'notsupersetof',
+		'disjointfrom', 'intersects',
+		'equals', 'notequals',
+	]),
+	set(['match', 'nomatch']),
+]
+
 def invert_op(op):
 	return _op_antonym[op]
 
+def related_ops(op):
+	for op_set in _op_sets:
+		if op in op_set:
+			return op_set
+	return set()
 
 class CubeQuery(object):
 	def __init__(self):
@@ -148,13 +166,24 @@ class CubeQuery(object):
 			rv._filters = [f for f in rv._filters if f != (name, operator, value)]
 		return rv
 
-	def invert_filter(self, name, value, operator):
-		"""Return a new `CubeQuery` with filter inverted."""
+	def swap_filter(self, name, value, operator, new_operator):
+		"""Return a new `CubeQuery` with filter operator changed."""
 		rv = self.copy()
 		original = (name, operator, value)
-		inverted = (name, invert_op(operator), value)
-		rv._filters = [inverted if f == original else f for f in rv._filters]
+		replacement = (name, new_operator, value)
+		rv._filters = [replacement if f == original else f for f in rv._filters]
 		return rv
+
+	def invert_filter(self, name, value, operator):
+		"""Return a new `CubeQuery` with filter inverted."""
+		return self.swap_filter(name, value, operator, invert_op(operator))
+
+	def related_filters(self, name, value, operator):
+		"""Return a dictionary of new `CubeQuery`s with other ops in place of this filter."""
+		return {
+			other_op: self.swap_filter(name, value, operator, other_op)
+			for other_op in related_ops(operator)
+		}
 
 	def get_range(self, axis):
 		"""Return start and end values of the range of an axis."""

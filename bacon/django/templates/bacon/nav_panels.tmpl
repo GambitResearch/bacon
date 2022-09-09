@@ -52,13 +52,20 @@
 					<span>&#10005;</span>
 				</a>
 				{{ filter.pretty_name }}
+				<div class="bacon-dropper-activator">
 				<a class="nav button" title="Invert filter" href="{% query_url panel filter.query_invert %}">
 					{{ filter.pretty_op }} 
 				</a>
+				<div class="bacon-dropper bacon-panel">
+				{% for pretty_name, filter in filter.query_related.items %}
+					<p><a class="nav button" title="Switch filter to {{ pretty_name }}" href="{% query_url panel filter %}">{{ pretty_name }}</a></p>
+				{% endfor %}
+				</div>
+				</div>
 				{% if filter.op in MULTI_ARG_OPS %}
 					 {{ filter.pretty_value }}
 				{% else %}
-					<span class="bacon-filter-value" data-name="{{ filter.name }}" data-current-value="{{ filter.str_value }}" data-op="{{ filter.op }}">{{ filter.pretty_value }}</span>
+					<span class="bacon-filter-value" data-name="{{ filter.name }}" data-current-value="{{ filter.str_value }}" data-op="{{ filter.op }}"> {{ filter.pretty_value }}</span>
 				{% endif %}
 			</div>
 		{% endfor %}
