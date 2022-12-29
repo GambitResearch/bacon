@@ -10,21 +10,21 @@ import bacon.observers.json
 
 
 def render_table_json(request, table):
-	data = bacon.observers.json.render_table_json(table)
-	return render_json(request, data)
+    data = bacon.observers.json.render_table_json(table)
+    return render_json(request, data)
 
 
 def render_nav_json(request, panel):
-	data = bacon.observers.json.render_nav_json(panel)
-	return render_json(request, data)
+    data = bacon.observers.json.render_nav_json(panel)
+    return render_json(request, data)
 
 
 def render_json(request, data):
-	if settings.DEBUG:
-		jkws = {'indent': 2, 'separators': (',', ': ')}
-	else:
-		jkws = {'separators': (',', ':')}
+    if settings.DEBUG:
+        jkws = {"indent": 2, "separators": (",", ": ")}
+    else:
+        jkws = {"separators": (",", ":")}
 
-	response = HttpResponse(content_type='application/json')
-	json.dump(data, response, **jkws)
-	return response
+    response = HttpResponse(content_type="application/json")
+    json.dump(data, response, **jkws)
+    return response

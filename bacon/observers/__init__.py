@@ -27,106 +27,104 @@ from bacon.cubenav import Navigator
 
 
 class Controller(object):
-	def __init__(self, name, builder, cutboard):
-		self.name = name
-		self.builder = builder
-		self.cutboard = cutboard
+    def __init__(self, name, builder, cutboard):
+        self.name = name
+        self.builder = builder
+        self.cutboard = cutboard
 
-		self._nav = Navigator(self.name,
-			builder=self.builder,
-			cubedef=cutboard.cubedef)
+        self._nav = Navigator(self.name, builder=self.builder, cubedef=cutboard.cubedef)
 
-	@property
-	def nav(self):  # TODO: rename to 'navigator'
-		nav = self._nav
-		if nav.query is None:
-			nav.parse_query(self.make_query())
-			assert nav.query is not None
+    @property
+    def nav(self):  # TODO: rename to 'navigator'
+        nav = self._nav
+        if nav.query is None:
+            nav.parse_query(self.make_query())
+            assert nav.query is not None
 
-		return nav
+        return nav
 
-	@property
-	def query(self):
-		try:
-			return self._q
-		except AttributeError:
-			self._q = self.get_query()
-			return self._q
+    @property
+    def query(self):
+        try:
+            return self._q
+        except AttributeError:
+            self._q = self.get_query()
+            return self._q
 
-	@property
-	def cubedef(self):
-		return self.cutboard.cubedef
+    @property
+    def cubedef(self):
+        return self.cutboard.cubedef
 
-	def get_query(self):
-		return self.nav.query
+    def get_query(self):
+        return self.nav.query
 
-	def make_query(self):
-		return CubeQuery()
+    def make_query(self):
+        return CubeQuery()
 
-	def finish_query(self, query):
-		return query
+    def finish_query(self, query):
+        return query
 
-	def get_slice(self, query=None):
-		if query is None:
-			query = self.finish_query(self.query)
+    def get_slice(self, query=None):
+        if query is None:
+            query = self.finish_query(self.query)
 
-		# Hack to work around Django swallowing some exceptions
-		# resulting in empty tables instead of an useful traceback:
-		# re-raise these exceptions as base Exception class.
-		# The 3-params form of raise preserves the original traceback.
-		try:
-			return self.cutboard.slice(query)
-		except (TypeError, AttributeError, KeyError) as e:
-			msg = "%s: %s" % (e.__class__.__name__, e)
-			six.reraise(Exception, Exception(msg))
+        # Hack to work around Django swallowing some exceptions
+        # resulting in empty tables instead of an useful traceback:
+        # re-raise these exceptions as base Exception class.
+        # The 3-params form of raise preserves the original traceback.
+        try:
+            return self.cutboard.slice(query)
+        except (TypeError, AttributeError, KeyError) as e:
+            msg = "%s: %s" % (e.__class__.__name__, e)
+            six.reraise(Exception, Exception(msg))
 
-	def get_value(self, param):
-		return self.builder.get_value(param)
+    def get_value(self, param):
+        return self.builder.get_value(param)
 
 
 class Viewer(object):
-	def __init__(self, name, controller):
-		self.name = name
-		self.controller = controller
+    def __init__(self, name, controller):
+        self.name = name
+        self.controller = controller
 
-	def get_value(self, param):
-		param = self.name + "-" + param if param else self.name
-		return self.controller.get_value(param)
+    def get_value(self, param):
+        param = self.name + "-" + param if param else self.name
+        return self.controller.get_value(param)
 
-	def get_url(self, query, builder=None, params=None):
-		if params is not None:
-			mparams = {}
-			for k, v in params.items():
-				if k:
-					k = self.name + '-' + k
-				else:
-					k = self.name
-				mparams[k] = v
+    def get_url(self, query, builder=None, params=None):
+        if params is not None:
+            mparams = {}
+            for k, v in params.items():
+                if k:
+                    k = self.name + "-" + k
+                else:
+                    k = self.name
+                mparams[k] = v
 
-		else:
-			mparams = None
+        else:
+            mparams = None
 
-		if builder is None:
-			builder = self.controller.builder
-		else:
-			builder.cubedef = self.controller.cubedef
+        if builder is None:
+            builder = self.controller.builder
+        else:
+            builder.cubedef = self.controller.cubedef
 
-		return builder.get_url(query, self.controller.name, params=mparams)
+        return builder.get_url(query, self.controller.name, params=mparams)
 
-	def get_query(self):
-		return self.controller.query
+    def get_query(self):
+        return self.controller.query
 
-	def finish_query(self, query):
-		return self.controller.finish_query(query)
+    def finish_query(self, query):
+        return self.controller.finish_query(query)
 
-	@property
-	def nav(self):
-		return self.controller.nav
+    @property
+    def nav(self):
+        return self.controller.nav
 
-	def get_slice(self):
-		query = self.get_query()
-		query = self.finish_query(query)
-		return self.controller.get_slice(query)
+    def get_slice(self):
+        query = self.get_query()
+        query = self.finish_query(query)
+        return self.controller.get_slice(query)
 
-	def filter(self, query):
-		return self.controller.cutboard.filter(query)
+    def filter(self, query):
+        return self.controller.cutboard.filter(query)

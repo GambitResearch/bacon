@@ -10,45 +10,55 @@ Requires CherryPy server, that can be obtained through::
 import os
 
 try:
-	# ~gammon/lib.maggie
-	import wsgiserver
+    # ~gammon/lib.maggie
+    import wsgiserver
 except ImportError:
-	# wsgiserver module is usually here:
-	from cherrypy import wsgiserver
+    # wsgiserver module is usually here:
+    from cherrypy import wsgiserver
 import django.core.handlers.wsgi
 
 import logging
+
 logger = logging.getLogger("gammon")
 
 
 def parse_options():
-	from optparse import OptionParser
-	parser = OptionParser()
-	parser.add_option("--host", default="localhost",
-		help="host to listen to [default: %default]")
-	parser.add_option("--port", type='int', default=8000,
-		help="port to listen to [default: %default]")
-	parser.add_option("--num-threads", metavar="N", type='int', default=20,
-		help="number of listening threads [default: %default]")
+    from optparse import OptionParser
 
-	opt, args = parser.parse_args()
-	if args:
-		parser.error("no argument expected, only params")
+    parser = OptionParser()
+    parser.add_option(
+        "--host", default="localhost", help="host to listen to [default: %default]"
+    )
+    parser.add_option(
+        "--port", type="int", default=8000, help="port to listen to [default: %default]"
+    )
+    parser.add_option(
+        "--num-threads",
+        metavar="N",
+        type="int",
+        default=20,
+        help="number of listening threads [default: %default]",
+    )
 
-	return opt
+    opt, args = parser.parse_args()
+    if args:
+        parser.error("no argument expected, only params")
+
+    return opt
+
 
 if __name__ == "__main__":
-	opt = parse_options()
+    opt = parse_options()
 
-	os.environ['DJANGO_SETTINGS_MODULE'] = 'gammon.settings'
-	server = wsgiserver.CherryPyWSGIServer(
-		(opt.host, opt.port),
-		django.core.handlers.wsgi.WSGIHandler(),
-		server_name='reports.example.com',
-		numthreads=opt.num_threads,
-	)
-	logger.info("listening on %s:%s", opt.host, opt.port)
-	try:
-		server.start()
-	except KeyboardInterrupt:
-		server.stop()
+    os.environ["DJANGO_SETTINGS_MODULE"] = "gammon.settings"
+    server = wsgiserver.CherryPyWSGIServer(
+        (opt.host, opt.port),
+        django.core.handlers.wsgi.WSGIHandler(),
+        server_name="reports.example.com",
+        numthreads=opt.num_threads,
+    )
+    logger.info("listening on %s:%s", opt.host, opt.port)
+    try:
+        server.start()
+    except KeyboardInterrupt:
+        server.stop()

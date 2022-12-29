@@ -6,12 +6,14 @@ from django.shortcuts import redirect
 # from django.contrib import admin
 # admin.autodiscover()
 
-urlpatterns = patterns('',
-	(r'^$', lambda r: redirect('/sales/')),
-
-	(r'^sales/', include('bacon_demo.bacon_sales.urls')),
-	(r'^sales-ajax/', include('bacon_demo.sales_ajax.urls')),
-
-	(r'^static/(.*)$', 'django.views.static.serve',
-		{'document_root': settings.PROJECT_DIR + '/static'}),
+urlpatterns = patterns(
+    "",
+    (r"^$", lambda r: redirect("/sales/")),
+    (r"^sales/", include("bacon_demo.bacon_sales.urls")),
+    (r"^sales-ajax/", include("bacon_demo.sales_ajax.urls")),
+    (
+        r"^static/(.*)$",
+        "django.views.static.serve",
+        {"document_root": settings.PROJECT_DIR + "/static"},
+    ),
 )
