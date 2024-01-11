@@ -20,8 +20,6 @@ may provide a mixin with the report logic and use it to create CustomizedTable,
 CustomizedPlot etc.
 """
 
-import six
-
 from bacon.cubequery import CubeQuery
 from bacon.cubenav import Navigator
 
@@ -75,8 +73,7 @@ class Controller:
         try:
             return self.cutboard.slice(query)
         except (TypeError, AttributeError, KeyError) as e:
-            msg = f"{e.__class__.__name__}: {e}"
-            six.reraise(Exception, Exception(msg))
+            raise Exception(f"{e.__class__.__name__}: {e}") from e
 
     def get_value(self, param):
         return self.builder.get_value(param)

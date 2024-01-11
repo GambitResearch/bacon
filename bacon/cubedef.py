@@ -4,7 +4,6 @@ import re
 from calendar import day_name, month_name
 from datetime import date, datetime, timedelta
 from operator import attrgetter
-from six import string_types
 
 import networkx as nx
 
@@ -93,14 +92,14 @@ class CubeDef:
         self._graph.add_node(name)
 
         if label.child_of:
-            if isinstance(label.child_of, string_types):
+            if isinstance(label.child_of, str):
                 self.add_hierarchy(label.child_of, name)
             else:
                 for parent in label.child_of:
                     self.add_hierarchy(parent, name)
 
         if label.parent_of:
-            if isinstance(label.parent_of, string_types):
+            if isinstance(label.parent_of, str):
                 self.add_hierarchy(name, label.parent_of)
             else:
                 for child in label.parent_of:
@@ -225,7 +224,7 @@ class Field:
         return self.title
 
     def __eq__(self, other):
-        if not isinstance(other, string_types):
+        if not isinstance(other, str):
             other = other.name
         return self._name == other
 
@@ -299,7 +298,7 @@ class Label:
         self.parent_of = parent_of
         self.dimension = dimension
 
-        self.cls = isinstance(cls, string_types) and (lambda v, record: cls) or cls
+        self.cls = isinstance(cls, str) and (lambda v, record: cls) or cls
         self.allow_pivot = allow_pivot
         self.hidden = hidden
         self._sql_expression = sql_expression or self.field.name
@@ -349,7 +348,7 @@ class Label:
     def __eq__(self, other):
         if isinstance(other, type(self)):
             return self.field == other.field
-        elif isinstance(other, string_types):
+        elif isinstance(other, str):
             return self.field == other
         else:
             return None
@@ -554,7 +553,7 @@ class SetLabel(NullableLabel):
         return "hasonly"
 
     def pretty(self, value, record=None):
-        if isinstance(value, string_types):
+        if isinstance(value, str):
             return value
         elif value is None or value == ((None,)):
             return self.none_label
