@@ -14,19 +14,6 @@ from bacon.utils.strings import ensure_unicode
 from bacon.utils.dateutils import date_to_quarter
 
 
-try:
-    unicode
-except NameError:
-    # Python 3
-    def strftime_latin1(dateval, template):
-        return dateval.strftime(template.decode("latin1"))
-
-else:
-    # Python 2
-    def strftime_latin1(dateval, template):
-        return dateval.strftime(template).decode("latin1")
-
-
 class DataDef:
     """Definition of a dataset.
 
@@ -842,7 +829,7 @@ class MonthLabelMixin:
         return date(d.year, d.month, 1)
 
     def pretty(self, d, record=None):
-        return d and strftime_latin1(d, b"%b\xA0%Y") or "Unknown"
+        return d and d.strftime("%b\xA0%Y") or "Unknown"
 
     def parse(self, s):
         # parse -6 like "6 months ago"
@@ -987,7 +974,7 @@ class DayLabelMixin:
         return date(d.year, d.month, d.day)
 
     def pretty(self, d, record=None):
-        return d and strftime_latin1(d, b"%a\xA0%Y-%m-%d") or "Unknown"
+        return d and d.strftime("%a\xA0%Y-%m-%d") or "Unknown"
 
     def parse(self, s):
         # parse -30 like "30 days ago"
@@ -1046,7 +1033,7 @@ class HourLabel(DatetimeTruncLabel):
         return datetime(d.year, d.month, d.day, hour=getattr(d, "hour", 0))
 
     def pretty(self, d, record=None):
-        return d and strftime_latin1(d, b"%a\xA0%Y-%m-%dT%H") or "Unknown"
+        return d and d.strftime("%a\xA0%Y-%m-%dT%H") or "Unknown"
 
     def parse(self, s):
         # parse -30 like "30 hours ago"
