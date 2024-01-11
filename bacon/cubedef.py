@@ -28,7 +28,7 @@ else:
         return dateval.strftime(template).decode("latin1")
 
 
-class DataDef(object):
+class DataDef:
     """Definition of a dataset.
 
     The datadef is similar to a table schema in a relational database: it
@@ -56,7 +56,7 @@ class DataDef(object):
             yield Row(self, raw_object)
 
 
-class Row(object):
+class Row:
     """
     A simple wrapper that makes a row of data act like a dictionary,
     based on the DataDef fields.
@@ -70,7 +70,7 @@ class Row(object):
         return self.datadef[field_name].extract(self.raw)
 
 
-class CubeDef(object):
+class CubeDef:
     """Definition of a dataset and the different ways to read it.
 
     The cubedef extends the definition of the data beyond what you get
@@ -197,7 +197,7 @@ class CubeDef(object):
         return list(map(self.get_label, descendants(self._graph, name)))
 
 
-class Field(object):
+class Field:
     """
     A basic field that can extract and render data from a record.  If
     you want to filter on it, use the Label class instead.
@@ -245,7 +245,7 @@ class Field(object):
         return ensure_unicode(value)
 
 
-class Label(object):
+class Label:
     """Definition of a label on the records in a dataset.
 
     The label can be either subclassed or populated by init arguments.
@@ -797,7 +797,7 @@ class DatetimePartLabel(DatetimeDateHierarchyLabelMixin):
         return f"date_part('{self.SQL_DATE_FIELD}', {self._sql_expression})::integer"
 
 
-class YearLabelMixin(object):
+class YearLabelMixin:
     SUFFIX = "_year"
     DEFAULT_TITLE = "Year"
     DATETIME_FORMAT = "%Y"
@@ -832,7 +832,7 @@ class ISOYearLabel(DatetimePartLabel):
         return date.isocalendar()[0]
 
 
-class MonthLabelMixin(object):
+class MonthLabelMixin:
     SUFFIX = "_month"
     DEFAULT_TITLE = "Month"
     FORMAT = "%Y-%m"
@@ -880,7 +880,7 @@ class MonthOfYearLabel(DatetimePartLabel):
         return date.month
 
 
-class QuarterLabelMixin(object):
+class QuarterLabelMixin:
     SUFFIX = "_quarter"
     DEFAULT_TITLE = "Quarter"
     DATETIME_FORMAT = "%Y-%m"
@@ -925,7 +925,7 @@ class QuarterNumLabel(DatetimePartLabel):
         return ((date.month - 1) // 3 * 3) + 1
 
 
-class WeekLabelMixin(object):
+class WeekLabelMixin:
     SUFFIX = "_week"
     DEFAULT_TITLE = "Week"
     FORMAT = "%Y-%m-%d"
@@ -977,7 +977,7 @@ class ISOWeekNumLabel(DatetimePartLabel):
         return date.isocalendar()[1]
 
 
-class DayLabelMixin(object):
+class DayLabelMixin:
     SUFFIX = "_day"
     DEFAULT_TITLE = "Day"
     FORMAT = "%Y-%m-%d"

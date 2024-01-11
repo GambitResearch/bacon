@@ -1,7 +1,7 @@
 """Package containing builders to build query from string representations."""
 
 
-class QueryBuilder(object):
+class QueryBuilder:
     """Builds a query from a string representation.
 
     The class can also return the string representation of a query from a context.

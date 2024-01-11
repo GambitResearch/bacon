@@ -26,7 +26,7 @@ from bacon.cubequery import CubeQuery
 from bacon.cubenav import Navigator
 
 
-class Controller(object):
+class Controller:
     def __init__(self, name, builder, cutboard):
         self.name = name
         self.builder = builder
@@ -82,7 +82,7 @@ class Controller(object):
         return self.builder.get_value(param)
 
 
-class Viewer(object):
+class Viewer:
     def __init__(self, name, controller):
         self.name = name
         self.controller = controller

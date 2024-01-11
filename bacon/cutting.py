@@ -30,7 +30,7 @@ except NameError:
     text_type = str
 
 
-class CuttingBoard(object):
+class CuttingBoard:
     """Allows observing a dataset according to the rules defined by a cubedef.
 
     `dataset` can be any iterable of python object, or callable returning one.
@@ -214,7 +214,7 @@ class CuttingBoard(object):
         d.appendleft(item)
 
 
-class SliceReuseStrategy(object):
+class SliceReuseStrategy:
     """Interface for strategies to use slices to create new slices."""
 
     def __init__(self, query):
@@ -534,7 +534,7 @@ class ManipulateSlice(SliceReuseStrategy):
 CuttingBoard.reuse_strategies.append(ManipulateSlice)
 
 
-class Slice(object):
+class Slice:
     """Accumulation in a dataset's values along some of its labels."""
 
     _lock = RLock()
@@ -657,7 +657,7 @@ class Slice(object):
         return self._zero_f()
 
 
-class LabeledValue(object):
+class LabeledValue:
     __slots__ = ["label", "value", "record"]
 
     def __init__(self, label, value, record=None):

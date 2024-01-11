@@ -352,7 +352,7 @@ def _render_pages(table, link):
     return rv
 
 
-class LinkMap(object):
+class LinkMap:
     def __init__(self):
         self.count = count()
         self.links = OrderedDict()

@@ -2,7 +2,7 @@
 from math import sqrt
 
 
-class Accumulator(object):
+class Accumulator:
     def add(self, v, record):
         raise NotImplementedError
 

@@ -23,7 +23,7 @@ CurrentFilter = namedtuple(
 )
 
 
-class Navigator(object):
+class Navigator:
     """Allows interactive navigation around a dataset."""
 
     def __init__(self, name, builder, cubedef):
@@ -277,7 +277,7 @@ class Navigator(object):
         return query
 
 
-class UrlMaker(object):
+class UrlMaker:
     """
     Helper mixin to make urls from something that has get_url and a navigator.
     """

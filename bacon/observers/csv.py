@@ -20,7 +20,7 @@ def render_csv(file, table, **kwargs):
     return cw.writer
 
 
-class CSVWrapper(object):
+class CSVWrapper:
     """Wrap the csv writer for easier access."""
 
     def __init__(self, writer):

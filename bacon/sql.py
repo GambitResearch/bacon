@@ -19,7 +19,7 @@ except NameError:
     basestring = str, bytes
 
 
-class SqlQuery(object):
+class SqlQuery:
     def __init__(self):
         self._prequerylist = []
         self._ctelist = []
@@ -179,7 +179,7 @@ class SqlQuery(object):
         return args
 
 
-class BaseConnectionFactory(object):
+class BaseConnectionFactory:
     """An abstract object returning and disposing database connections."""
 
     def getconn(self):
@@ -342,7 +342,7 @@ class DjangoCuttingBoard(CuttingBoard):
         return queryset
 
 
-class RowsProxy(object):
+class RowsProxy:
     """A container to return a list of result still supporting pagination
 
     Used for the interaction with a DetailsTable.

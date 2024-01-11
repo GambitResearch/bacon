@@ -54,7 +54,7 @@ def related_ops(op):
     return set()
 
 
-class CubeQuery(object):
+class CubeQuery:
     def __init__(self):
         self._axes = []
         self._values = []

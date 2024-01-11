@@ -11,7 +11,7 @@ class NavPanel(Viewer):
         self.widgets = widgets or []
 
 
-class NavWidget(object):
+class NavWidget:
     """An object displayed in a `NavPanel` allowing customised navigation."""
 
     def __init__(self, label):
@@ -97,7 +97,7 @@ class ButtonsWidget(NavWidget):
         self.buttons = buttons
 
 
-class Button(object):
+class Button:
     """A button redirecting to a new query when clicked."""
 
     def __init__(self, label, image_url=None, builder=None):

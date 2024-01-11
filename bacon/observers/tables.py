@@ -148,7 +148,7 @@ class Table(PaginatedViewer):
         self._widgets[col_name].append(widget)
 
 
-class RowWidget(object):
+class RowWidget:
     def __init__(self, name, builder, label=None):
         self.name = name
         self.label = label or name
@@ -159,7 +159,7 @@ class RowWidget(object):
 # this must be specified somehow
 
 
-class BaseTableRenderer(object):
+class BaseTableRenderer:
     def __init__(self, table):
         self.table = table
         self._nrows = 0

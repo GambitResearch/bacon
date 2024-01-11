@@ -9,7 +9,7 @@ except NameError:
     text_types = (str,)
 
 
-class Styles(object):
+class Styles:
     default = xlwt.easyxf("align: horiz center")
     title = xlwt.easyxf("font: bold on; align: horiz center")
     money = xlwt.easyxf("align: horiz right", num_format_str="#,##0.00")
@@ -26,13 +26,13 @@ class Styles(object):
     datetime = xlwt.easyxf(num_format_str="ddy/mm/yyyy hh:mm")
 
 
-class ColType(object):
+class ColType:
     def __init__(self, style=Styles.default, converter=lambda x: x):
         self.style = style
         self.converter = converter
 
 
-class Table(object):
+class Table:
     def __init__(self, col_defs):
         self.col_defs = col_defs
 
@@ -48,7 +48,7 @@ class Table(object):
         ws.newline()
 
 
-class WSWrapper(object):
+class WSWrapper:
     """
     Helper to add functionality to xlwt worksheet object.  Keeps track
     of row and column positions so you don't have to.
