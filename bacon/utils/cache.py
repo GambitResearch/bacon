@@ -69,7 +69,7 @@ def cached_method(f):
     The decorator is not thread-safe. If needed use the `synchro_method`
     decorator to serialize access to the function.
     """
-    cache_name = "_cache_%s" % f.__name__
+    cache_name = f"_cache_{f.__name__}"
 
     @wraps(f)
     def cached_method_(self, *args):

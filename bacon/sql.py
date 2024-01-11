@@ -78,7 +78,7 @@ class SqlQuery(object):
 
         sql = deepcopy(self)
         sql._columns.add(column)
-        sql._selectlist.append("(%s) AS %s" % (expression, self.quote_ident(column)))
+        sql._selectlist.append(f"({expression}) AS {self.quote_ident(column)}")
         sql._grouplist.append(expression)
         return sql
 
@@ -93,7 +93,7 @@ class SqlQuery(object):
 
         sql = deepcopy(self)
         sql._columns.add(column)
-        sql._selectlist.append("(%s) AS %s" % (expression, self.quote_ident(column)))
+        sql._selectlist.append(f"({expression}) AS {self.quote_ident(column)}")
         return sql
 
     def add_filter(self, expression, *values):

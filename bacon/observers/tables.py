@@ -342,7 +342,7 @@ class TablePivot(UrlMaker, BaseTableRenderer):
         self.pivot_labels = list(self.nav.pivot)
         for l in self.pivot_labels:
             if not l.allow_pivot:
-                raise errors.QueryError("can't pivot on %s" % l.name)
+                raise errors.QueryError(f"can't pivot on {l.name}")
 
     # TODO: everything that is not a method needs being an attribute. Django
     # doesn't need braces but other observers do

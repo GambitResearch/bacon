@@ -86,7 +86,7 @@ class CubeDef(object):
     def add_label(self, label):
         """Add a new label definition."""
         if not isinstance(label, Label):
-            raise TypeError("expected 'Label' instance, %r got instead" % label)
+            raise TypeError(f"expected 'Label' instance, {label!r} got instead")
 
         name = label.name
         self._labels[name] = label
@@ -116,7 +116,7 @@ class CubeDef(object):
         try:
             return self._labels[name]
         except KeyError:
-            raise errors.DataError("label not defined: '%s'" % name)
+            raise errors.DataError(f"label not defined: '{name}'")
 
     def get_labels(self):
         """Return the list of all the labels defined."""
@@ -125,7 +125,7 @@ class CubeDef(object):
     def add_measure(self, measure):
         """Add a new measure definition."""
         if not isinstance(measure, Label):
-            raise TypeError("expected 'Label' instance, %r got instead" % measure)
+            raise TypeError(f"expected 'Label' instance, {measure!r} got instead")
 
         self._measures[measure.name] = measure
 
@@ -140,7 +140,7 @@ class CubeDef(object):
             try:
                 return self._labels[name]
             except KeyError:
-                raise errors.DataError("measure not defined: '%s'" % name)
+                raise errors.DataError(f"measure not defined: '{name}'")
 
     def get_measures(self):
         """Return the list of all the measures defined."""
@@ -216,7 +216,7 @@ class Field(object):
         return self._name
 
     def __repr__(self):
-        return "<%s %r at 0x%08X>" % (type(self).__name__, self._name, id(self))
+        return f"<{type(self).__name__} {self._name!r} at 0x{id(self):08X}>"
 
     def __unicode__(self):
         return self.title
@@ -344,7 +344,7 @@ class Label(object):
         return self.field.pretty(value, record)
 
     def __repr__(self):
-        return "<%s %r at 0x%08X>" % (type(self).__name__, self.name, id(self))
+        return f"<{type(self).__name__} {self.name!r} at 0x{id(self):08X}>"
 
     def __eq__(self, other):
         if isinstance(other, type(self)):
@@ -427,7 +427,7 @@ class Label(object):
         if type(self.django_expression) == str:
             if op not in self.django_opmap:
                 raise NotImplementedError(
-                    "The operation %s is not implemented as a django query filter" % op
+                    f"The operation {op} is not implemented as a django query filter"
                 )
             qop = self.django_opmap[op]
 
@@ -480,11 +480,11 @@ class Label(object):
             if None in value:
                 value = value - set([None])
                 if op == "in":
-                    filter = "(((%s) is null) or %s)" % (self.sql_expression, filter)
+                    filter = f"((({self.sql_expression}) is null) or {filter})"
 
             else:
                 if op == "ni":
-                    filter = "(((%s) is null) or %s)" % (self.sql_expression, filter)
+                    filter = f"((({self.sql_expression}) is null) or {filter})"
 
             value = tuple(value)
 
@@ -601,7 +601,7 @@ class SetLabel(NullableLabel):
             return "((%s) @> %%s)" % self.field.name, [value]
         elif op in ("hasonly", "equals"):  # or op == 'eq':
             if value == "{}":
-                return "((%s) is null)" % self.field.name, []
+                return f"(({self.field.name}) is null)", []
             else:
                 return "(((%s) @> (%%s)) and ((%s) <@ (%%s)))" % (
                     self.field.name,
@@ -618,7 +618,7 @@ class SetLabel(NullableLabel):
             except ValueError:
                 # We prefer to raise our own error
                 pass
-        raise ValueError("Unexpected op %s for SetLabel %s" % (op, self.field.name))
+        raise ValueError(f"Unexpected op {op} for SetLabel {self.field.name}")
 
 
 class SetLabelAny(SetLabel):
@@ -658,7 +658,7 @@ class DatetimeDateTypeLabel(Label):
         try:
             return datetime.strptime(s, self.DATETIME_FORMAT)
         except ValueError:
-            raise errors.DataError("bad date: {!r}".format(s))
+            raise errors.DataError(f"bad date: {s!r}")
 
     def unparse(self, v):
         return v.strftime(self.DATETIME_FORMAT) if v else None
@@ -695,7 +695,7 @@ class DatetimeDateHierarchyLabelMixin(DatetimeDateTypeLabel):
 
     @property
     def name(self):
-        return "%s%s" % (self.field.name, self.SUFFIX)
+        return f"{self.field.name}{self.SUFFIX}"
 
     def _convert_datetime_if_required(self, rv):
         return rv
@@ -756,16 +756,13 @@ class DatetimeDateTruncLabelMixin(DatetimeDateHierarchyLabelMixin):
 class DateTruncLabel(DateHierarchyLabel, DatetimeDateTruncLabelMixin):
     @property
     def sql_expression(self):
-        return "date_trunc('%s', %s)::date" % (
-            self.SQL_DATE_FIELD,
-            self._sql_expression,
-        )
+        return f"date_trunc('{self.SQL_DATE_FIELD}', {self._sql_expression})::date"
 
 
 class DatetimeTruncLabel(DatetimeHierarchyLabel, DatetimeDateTruncLabelMixin):
     @property
     def sql_expression(self):
-        return "date_trunc('%s', %s)" % (self.SQL_DATE_FIELD, self._sql_expression)
+        return f"date_trunc('{self.SQL_DATE_FIELD}', {self._sql_expression})"
 
 
 class DatetimePartLabel(DatetimeDateHierarchyLabelMixin):
@@ -797,10 +794,7 @@ class DatetimePartLabel(DatetimeDateHierarchyLabelMixin):
 
     @property
     def sql_expression(self):
-        return "date_part('%s', %s)::integer" % (
-            self.SQL_DATE_FIELD,
-            self._sql_expression,
-        )
+        return f"date_part('{self.SQL_DATE_FIELD}', {self._sql_expression})::integer"
 
 
 class YearLabelMixin(object):
@@ -946,7 +940,7 @@ class WeekLabelMixin(object):
             return "Unknown"
         d1 = d - timedelta(days=d.isoweekday() - 1)
         d2 = d1 + timedelta(days=6)
-        return "%s..%s" % (d1.strftime("%d %b"), d2.strftime("%d %b %Y"))
+        return f"{d1.strftime('%d %b')}..{d2.strftime('%d %b %Y')}"
 
     def parse(self, s):
         # parse -4 like "4 weeks ago"

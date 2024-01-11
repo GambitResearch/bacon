@@ -75,7 +75,7 @@ class Controller(object):
         try:
             return self.cutboard.slice(query)
         except (TypeError, AttributeError, KeyError) as e:
-            msg = "%s: %s" % (e.__class__.__name__, e)
+            msg = f"{e.__class__.__name__}: {e}"
             six.reraise(Exception, Exception(msg))
 
     def get_value(self, param):

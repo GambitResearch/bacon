@@ -6,7 +6,7 @@ register = template.Library()
 
 @register.simple_tag
 def widget(panel, widget):
-    f = globals().get("render_%s" % widget.__class__.__name__, render_widget)
+    f = globals().get(f"render_{widget.__class__.__name__}", render_widget)
     return f(panel, widget)
 
 
@@ -38,7 +38,7 @@ def render_StringFilterWidget(panel, widget):
         widget,
         urls=urls,
         value=value or "",
-        unique="bacon_string_filter_{}".format(widget.axis),
+        unique=f"bacon_string_filter_{widget.axis}",
     )
 
 
@@ -53,7 +53,7 @@ def button(button, widget, panel):
 def render_widget(panel, widget, **kwargs):
     kwargs["panel"] = panel
     kwargs["widget"] = widget
-    tmpl = "bacon/nav/widgets/%s.tmpl" % widget.__class__.__name__
+    tmpl = f"bacon/nav/widgets/{widget.__class__.__name__}.tmpl"
     tmpl = template.loader.get_template(tmpl)
     if django.VERSION[:2] >= (1, 8):
         context = kwargs

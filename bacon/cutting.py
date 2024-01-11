@@ -126,7 +126,7 @@ class CuttingBoard(object):
             root = bins[()]
 
         slice._data = root
-        logger.debug("NEW: slice %s for query %s" % (slice._ident, query.__dict__))
+        logger.debug(f"NEW: slice {slice._ident} for query {query.__dict__}")
         return slice
 
     def _make_empty_slice(self, query):
@@ -481,7 +481,7 @@ class ManipulateSlice(SliceReuseStrategy):
             try:
                 op = _op_map[op]
             except KeyError:
-                raise errors.QueryError("unknown operator: '%s'" % op)
+                raise errors.QueryError(f"unknown operator: '{op}'")
 
             # we know for compatibility that the filter is on one of the slice axes
             idxs.append(qold.axes.index(name))
@@ -552,11 +552,11 @@ class Slice(object):
         self._zero_f, self._acc_f = _make_acc_function(query, cubedef)
 
         with Slice._lock:
-            self._ident = "s-%s" % Slice._n
+            self._ident = f"s-{Slice._n}"
             Slice._n += 1
 
     def __repr__(self):
-        return "<%s dim=%s at 0x%08X>" % (self.__class__.__name__, self.dim, id(self))
+        return f"<{self.__class__.__name__} dim={self.dim} at 0x{id(self):08X}>"
 
     def __getitem__(self, idx):
         """Remove one of the slice axes.
@@ -892,7 +892,7 @@ def _make_filter_predicate(query, cubedef):
         try:
             op = _op_map[op]
         except KeyError:
-            raise errors.QueryError("unknown operator: '%s'" % op)
+            raise errors.QueryError(f"unknown operator: '{op}'")
 
         es.append(cubedef.get_label(name).extract)
         ops.append(op)

@@ -22,7 +22,7 @@ def render_excel(table, title="Sheet"):
 
     ws.newline()
     ws.write(
-        "Report generated on %s" % datetime.datetime.now().strftime("%d/%m/%Y %H:%M"),
+        f"Report generated on {datetime.datetime.now().strftime('%d/%m/%Y %H:%M')}",
         # font height in 1/20th of points of course...
         style=xlwt.easyxf("font: height 160"),
     )
