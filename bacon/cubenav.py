@@ -1,11 +1,5 @@
 #!/usr/bin/env python
 from operator import attrgetter
-
-try:
-    from itertools import imap
-except ImportError:
-    pass
-
 from bacon.cubequery import CubeQuery
 from collections import namedtuple
 from bacon.constants import MULTI_ARG_OPS

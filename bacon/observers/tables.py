@@ -2,16 +2,7 @@
 from math import ceil
 from itertools import chain
 
-try:
-    from itertools import izip
-except ImportError:
-    izip = zip
 from collections import defaultdict
-
-try:
-    xrange
-except NameError:
-    xrange = range
 
 from bacon import errors
 from bacon.observers import Viewer
@@ -101,13 +92,13 @@ class PaginatedViewer(Viewer):
 
         def run(start, end):
             if end - start < 7:
-                for n in xrange(start, end):
+                for n in range(start, end):
                     yield link(n)
             else:
-                for n in xrange(start, start + 2):
+                for n in range(start, start + 2):
                     yield link(n)
                 yield label("...")
-                for n in xrange(end - 2, end):
+                for n in range(end - 2, end):
                     yield link(n)
 
         return chain(
@@ -465,7 +456,7 @@ class TablePivot(UrlMaker, BaseTableRenderer):
 
     def _iter_row(self, slice, row_totals, col_totals):
         titles = self.value_titles()
-        for labels, ctot in izip(self.pivot_lvs(), col_totals):
+        for labels, ctot in zip(self.pivot_lvs(), col_totals):
             tmp_slice = slice
             try:
                 for label in labels:

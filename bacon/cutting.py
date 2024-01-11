@@ -4,10 +4,6 @@ import operator
 from copy import copy, deepcopy
 from functools import wraps
 
-try:
-    from itertools import ifilter
-except ImportError:
-    ifilter = filter
 from threading import RLock
 from collections import defaultdict, deque
 
@@ -20,12 +16,6 @@ import logging
 
 logger = logging.getLogger("bacon.cutting")
 logger.setLevel(logging.INFO)
-
-
-try:
-    xrange
-except NameError:
-    xrange = range
 
 
 class CuttingBoard:
@@ -76,7 +66,7 @@ class CuttingBoard:
         # Filter the dataset if required
         filter_p = _make_filter_predicate(query, self.cubedef)
         if filter_p is not None:
-            dataset = ifilter(filter_p, dataset)
+            dataset = filter(filter_p, dataset)
 
         return dataset
 
@@ -90,7 +80,7 @@ class CuttingBoard:
         # Filter the dataset if required
         filter_p = _make_filter_predicate(query, self.cubedef)
         if filter_p is not None:
-            dataset = ifilter(filter_p, dataset)
+            dataset = filter(filter_p, dataset)
 
         return self._fill_slice(slice, query, dataset)
 
@@ -396,7 +386,7 @@ class ManipulateSlice(SliceReuseStrategy):
 
         ds = self._unroll(slice)
         if filter_p is not None:
-            ds = ifilter(filter_p, ds)
+            ds = filter(filter_p, ds)
 
         bins = {}
         for okey, acc in ds:
@@ -499,11 +489,11 @@ class ManipulateSlice(SliceReuseStrategy):
 			return %(ps)s
 		"""
                 % {
-                    "idxs": ", ".join("idx%d=idxs[%d]" % (i, i) for i in xrange(L)),
-                    "vs": ", ".join("v%d=vs[%d]" % (i, i) for i in xrange(L)),
-                    "ops": ", ".join("op%d=ops[%d]" % (i, i) for i in xrange(L)),
+                    "idxs": ", ".join("idx%d=idxs[%d]" % (i, i) for i in range(L)),
+                    "vs": ", ".join("v%d=vs[%d]" % (i, i) for i in range(L)),
+                    "ops": ", ".join("op%d=ops[%d]" % (i, i) for i in range(L)),
                     "ps": " and ".join(
-                        "op%d(key[idx%d], v%d)" % (i, i, i) for i in xrange(L)
+                        "op%d(key[idx%d], v%d)" % (i, i, i) for i in range(L)
                     ),
                 }
             ),
@@ -720,7 +710,7 @@ def _make_acc_function(query, cubedef):
 	"""
         % {
             "accs": ", ".join(
-                "a%d=labels[%d].acc" % (i, i) for i in xrange(len(labels))
+                "a%d=labels[%d].acc" % (i, i) for i in range(len(labels))
             ),
             "items": ", ".join(
                 "%r: a%d()" % (label.name, i) for i, label in enumerate(labels)
@@ -740,7 +730,7 @@ def _make_acc_function(query, cubedef):
 	"""
                 % {
                     "es": ", ".join(
-                        "e%d=labels[%d].extract" % (i, i) for i in xrange(len(labels))
+                        "e%d=labels[%d].extract" % (i, i) for i in range(len(labels))
                     ),
                     "adds": "\n".join(
                         "\t\tacc[%r].add(e%d(record), record)" % (label.name, i)
@@ -908,11 +898,11 @@ def _make_filter_predicate(query, cubedef):
 		return %(ps)s
 	"""
             % {
-                "es": ", ".join("e%d=es[%d]" % (i, i) for i in xrange(L)),
-                "vs": ", ".join("v%d=vs[%d]" % (i, i) for i in xrange(L)),
-                "ops": ", ".join("op%d=ops[%d]" % (i, i) for i in xrange(L)),
+                "es": ", ".join("e%d=es[%d]" % (i, i) for i in range(L)),
+                "vs": ", ".join("v%d=vs[%d]" % (i, i) for i in range(L)),
+                "ops": ", ".join("op%d=ops[%d]" % (i, i) for i in range(L)),
                 "ps": " and ".join(
-                    "op%d(e%d(record), v%d)" % (i, i, i) for i in xrange(L)
+                    "op%d(e%d(record), v%d)" % (i, i, i) for i in range(L)
                 ),
             }
         ),

@@ -7,11 +7,6 @@ http://code.activestate.com/recipes/498181/ (r1)
 
 import re
 
-try:
-    xrange
-except NameError:
-    xrange = range
-
 __test__ = {}
 
 re_digits_nondigits = re.compile(r"\d+|\D+")
@@ -75,7 +70,7 @@ def FormatWithCommas(format, value):
     """
 
     parts = re_digits_nondigits.findall(format % (value,))
-    for i in xrange(len(parts)):
+    for i in range(len(parts)):
         s = parts[i]
         if s.isdigit():
             parts[i] = _commafy(s)
