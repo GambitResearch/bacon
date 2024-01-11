@@ -15,4 +15,5 @@ setup(
     install_requires=["networkx>=1.1,<2.0", "six", "pytz"],
     use_scm_version={"version_scheme": "post-release"},
     setup_requires=["setuptools_scm"],
+    python_requires=">=3.6",
 )
