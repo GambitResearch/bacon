@@ -504,25 +504,25 @@ class NullableLabel(Label):
     """A label that can handle None values outside the data type space."""
 
     def __init__(self, name, none_value="", none_label="(none)", **kwargs):
-        super(NullableLabel, self).__init__(name, **kwargs)
+        super().__init__(name, **kwargs)
         self.none_value = none_value
         self.none_label = none_label
 
     def pretty(self, value, record=None):
         if value is not None:
-            return super(NullableLabel, self).pretty(value, record)
+            return super().pretty(value, record)
         else:
             return self.none_label
 
     def parse(self, s):
         if s != self.none_value:
-            return super(NullableLabel, self).parse(s)
+            return super().parse(s)
         else:
             return None
 
     def unparse(self, v):
         if v is not None:
-            return super(NullableLabel, self).unparse(v)
+            return super().unparse(v)
         else:
             return self.none_value
 
@@ -538,7 +538,7 @@ class AttributeLabel(NullableLabel):
         self.attr = attr
         if "sql_expression" not in kwargs:
             kwargs["sql_expression"] = attr
-        super(AttributeLabel, self).__init__(name, extract=extract, **kwargs)
+        super().__init__(name, extract=extract, **kwargs)
 
 
 class SetLabel(NullableLabel):
@@ -668,7 +668,7 @@ class DatetimeTypeLabel(DatetimeDateTypeLabel):
     DATETIME_FORMAT = "%Y-%m-%dT%H:%M"
 
     def parse(self, s):
-        datetime_obj = super(DatetimeTypeLabel, self).parse(s)
+        datetime_obj = super().parse(s)
         if (
             datetime_obj.tzinfo is None
             or datetime_obj.tzinfo.utcoffset(datetime_obj) is None
@@ -679,7 +679,7 @@ class DatetimeTypeLabel(DatetimeDateTypeLabel):
 
 class DateTypeLabel(DatetimeDateTypeLabel):
     def parse(self, s):
-        return super(DateTypeLabel, self).parse(s).date()
+        return super().parse(s).date()
 
 
 class DatetimeDateHierarchyLabelMixin(DatetimeDateTypeLabel):
@@ -688,7 +688,7 @@ class DatetimeDateHierarchyLabelMixin(DatetimeDateTypeLabel):
 
     def __init__(self, name_or_field, **kwargs):
         self._title = kwargs.get("title", self.DEFAULT_TITLE)
-        super(DatetimeDateHierarchyLabelMixin, self).__init__(name_or_field, **kwargs)
+        super().__init__(name_or_field, **kwargs)
 
     def __unicode__(self):
         return self.title
@@ -739,7 +739,7 @@ _re_delta = re.compile(r"-?\d+$")
 
 class DatetimeDateTruncLabelMixin(DatetimeDateHierarchyLabelMixin):
     def add_sql_filter(self, sql, op, value):
-        sql = super(DatetimeDateTruncLabelMixin, self).add_sql_filter(sql, op, value)
+        sql = super().add_sql_filter(sql, op, value)
 
         if op in ("ge", "gt", "eq") and not isinstance(self, DayLabel):
             # Leave out Daylabel because it doesn't truncate.
@@ -853,7 +853,7 @@ class MonthLabelMixin(object):
             year, month = divmod(nmonths + int(s), 12)
             return date(year, month + 1, 1)
         else:
-            return super(MonthLabelMixin, self).parse(s)
+            return super().parse(s)
 
 
 class MonthLabel(MonthLabelMixin, DateTruncLabel):
@@ -900,7 +900,7 @@ class QuarterLabelMixin(object):
         if _re_delta.match(s):
             return date_to_quarter(date.today(), int(s))
         else:
-            d = super(QuarterLabelMixin, self).parse(s)
+            d = super().parse(s)
             return self.classify(d)
 
 
@@ -949,7 +949,7 @@ class WeekLabelMixin(object):
             day -= timedelta(days=day.isoweekday() - 1)  # first day of the week
             return day + timedelta(days=7 * int(s))
         else:
-            return super(WeekLabelMixin, self).parse(s)
+            return super().parse(s)
 
 
 class WeekLabel(WeekLabelMixin, DateTruncLabel):
@@ -995,7 +995,7 @@ class DayLabelMixin(object):
         if _re_delta.match(s):
             return date.today() + timedelta(days=int(s))
         else:
-            return super(DayLabelMixin, self).parse(s)
+            return super().parse(s)
 
     def to_excel(self, value, record=None):
         return value
@@ -1054,7 +1054,7 @@ class HourLabel(DatetimeTruncLabel):
         if _re_delta.match(s):
             return date.today() + timedelta(hours=int(s))
         else:
-            return super(HourLabel, self).parse(s)
+            return super().parse(s)
 
 
 class WeekdayLabel(DatetimePartLabel):
@@ -1092,7 +1092,7 @@ class Measure(Label):
     def __init__(self, name, cls="measure", show_by_default=True, **kwargs):
         if "acc" not in kwargs:
             kwargs["acc"] = accs.Sum
-        super(Measure, self).__init__(name, cls=cls, **kwargs)
+        super().__init__(name, cls=cls, **kwargs)
         self.show_by_default = show_by_default
 
     def add_sql_measure(self, sql):
@@ -1103,7 +1103,7 @@ class AttributeMeasure(Measure, AttributeLabel):
     def __init__(self, name, **kwargs):
         if "none_value" not in kwargs:
             kwargs["none_value"] = ""
-        super(AttributeMeasure, self).__init__(name, **kwargs)
+        super().__init__(name, **kwargs)
 
 
 class AttributeRatioMeasure(AttributeMeasure):
@@ -1127,4 +1127,4 @@ class AttributeRatioMeasure(AttributeMeasure):
             else:
                 return ratio
 
-        super(AttributeRatioMeasure, self).__init__(name, extract=ratio, **kwargs)
+        super().__init__(name, extract=ratio, **kwargs)

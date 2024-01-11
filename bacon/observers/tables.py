@@ -27,7 +27,7 @@ from bacon.utils import cache
 
 class PaginatedViewer(Viewer):
     def __init__(self, name, controller, page_size=None, **kwargs):
-        super(PaginatedViewer, self).__init__(name, controller, **kwargs)
+        super().__init__(name, controller, **kwargs)
         self.page_size = page_size
         self._nrows = None
 
@@ -144,7 +144,7 @@ class PaginatedViewer(Viewer):
 
 class Table(PaginatedViewer):
     def __init__(self, name, controller, **kwargs):
-        super(Table, self).__init__(name, controller, **kwargs)
+        super().__init__(name, controller, **kwargs)
         self._widgets = defaultdict(list)
 
     def add_widget(self, widget, col_name=None):
@@ -338,7 +338,7 @@ class TablePivot(UrlMaker, BaseTableRenderer):
     Row = namedtuple("Table2DRow", ["slice", "labels", "values", "totals"])
 
     def __init__(self, table):
-        super(TablePivot, self).__init__(table)
+        super().__init__(table)
         self.pivot_labels = list(self.nav.pivot)
         for l in self.pivot_labels:
             if not l.allow_pivot:

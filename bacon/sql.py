@@ -228,7 +228,7 @@ class SqlCuttingBoard(CuttingBoard):
         self.sql = sql
         self.connection_factory = connection_factory
 
-        super(SqlCuttingBoard, self).__init__(cubedef, dataset=())
+        super().__init__(cubedef, dataset=())
 
     @with_connection_method
     def _make_slice(self, cnn, query):
@@ -301,7 +301,7 @@ class DjangoCuttingBoard(CuttingBoard):
         self.only = set()
         self.select_related = set()
         self.prefetch_related = set()
-        super(DjangoCuttingBoard, self).__init__(cubedef, dataset=())
+        super().__init__(cubedef, dataset=())
 
     def _add_label(self, label):
         for select_related in label.django_select_related:

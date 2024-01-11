@@ -55,7 +55,7 @@ class LoggingMiddleware(MiddlewareMixin):
             except ImportError:
                 pass
 
-        rv = super(LoggingMiddleware, cls).__new__(LoggingMiddleware)
+        rv = super().__new__(LoggingMiddleware)
         LoggingMiddleware.__init__(rv, **kwargs)
         return rv
 

@@ -9,7 +9,7 @@ class DjangoConnectionFactory(BaseConnectionFactory):
 
     def __init__(self, db_name=None):
         self.db_name = db_name
-        super(DjangoConnectionFactory, self).__init__()
+        super().__init__()
 
     def getconn(self):
         if self.db_name is None:

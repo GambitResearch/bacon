@@ -7,7 +7,7 @@ from bacon.observers import Viewer
 
 class Plot(Viewer):
     def __init__(self, name, controller, size=(640, 480), dpi=80, **kwargs):
-        super(Plot, self).__init__(name, controller, **kwargs)
+        super().__init__(name, controller, **kwargs)
         self.size = size
         self.dpi = dpi
 
@@ -34,7 +34,7 @@ class Plot(Viewer):
 
 class TimePlotData(Plot):
     def __init__(self, name, controller, **kwargs):
-        super(TimePlotData, self).__init__(name, controller, **kwargs)
+        super().__init__(name, controller, **kwargs)
 
     def _make_data(self):
         if hasattr(self, "_t"):

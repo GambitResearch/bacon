@@ -46,7 +46,7 @@ class UrlQueryBuilder(QueryBuilder):
         self, context, cubedef=None, base_url=None, query_location=IN_QUERY, **kwargs
     ):
         """The context should be a parameters mapping."""
-        super(UrlQueryBuilder, self).__init__(context, cubedef, **kwargs)
+        super().__init__(context, cubedef, **kwargs)
         self.base_url = base_url if base_url is not None else "."
         self.query_dict = context
         self.query_location = query_location
