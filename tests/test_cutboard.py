@@ -48,27 +48,19 @@ class CubeDefTestCase(unittest.TestCase):
         slice = cb.slice(cq, flat=False)
         self.assertEqual(
             (180,),
-            slice[1,][
-                "apples",
-            ],
+            slice[1,]["apples",],
         )
         self.assertEqual(
             (101,),
-            slice[1,][
-                "pears",
-            ],
+            slice[1,]["pears",],
         )
         self.assertEqual(
             (50,),
-            slice[2,][
-                "apples",
-            ],
+            slice[2,]["apples",],
         )
         self.assertEqual(
             50,
-            slice[2,][
-                "apples",
-            ].number,
+            slice[2,]["apples",].number,
             "not a namedtuple",
         )
 
@@ -84,21 +76,15 @@ class CubeDefTestCase(unittest.TestCase):
         slice = cb.slice(cq, flat=False)
         self.assertEqual(
             (281,),
-            slice[
-                1,
-            ],
+            slice[1,],
         )
         self.assertEqual(
             (50,),
-            slice[
-                2,
-            ],
+            slice[2,],
         )
         self.assertEqual(
             50,
-            slice[
-                2,
-            ].number,
+            slice[2,].number,
             "not a namedtuple",
         )
 
@@ -114,15 +100,11 @@ class CubeDefTestCase(unittest.TestCase):
         slice = cb.slice(cq, flat=False)
         self.assertEqual(
             100,
-            slice[1, "italy"][
-                "apples",
-            ].number,
+            slice[1, "italy"]["apples",].number,
         )
         self.assertEqual(
             50,
-            slice[2, "italy"][
-                "apples",
-            ].number,
+            slice[2, "italy"]["apples",].number,
         )
 
     def test_slice_iteration(self):

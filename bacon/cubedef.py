@@ -274,7 +274,6 @@ class Label(object):
         allow_pivot=True,
         hidden=False,
     ):
-
         if isinstance(name_or_field, Field):
             self.field = name_or_field
             if extract:

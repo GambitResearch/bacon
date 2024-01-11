@@ -69,7 +69,6 @@ class LoggingMiddleware(MiddlewareMixin):
         set_logger_level=logging.DEBUG,
         disable_on_devel=True,
     ):
-
         # Because __init__ is called manually by __new__, it is invoked twice:
         # bail out early the second time as we are already configured.
         if self.__dict__:

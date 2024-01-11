@@ -232,7 +232,6 @@ class TableDetails(UrlMaker, BaseTableRenderer):
 
 
 class Table1D(UrlMaker, BaseTableRenderer):
-
     Row = namedtuple("Table1DRow", ["slice", "labels", "values"])
 
     def label_titles(self):
@@ -336,7 +335,6 @@ class Table1D(UrlMaker, BaseTableRenderer):
 
 
 class TablePivot(UrlMaker, BaseTableRenderer):
-
     Row = namedtuple("Table2DRow", ["slice", "labels", "values", "totals"])
 
     def __init__(self, table):
