@@ -2,11 +2,6 @@
 
 import re
 
-try:
-    from urllib import quote_plus
-except ImportError:
-    from urllib.parse import quote_plus  # noqa -- for export
-
 
 def bssplit(s, sep, maxsplit=0):
     r"""Similare to ``s.split(sep)``, but avoid \-escaped sep."""

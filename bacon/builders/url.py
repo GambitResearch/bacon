@@ -1,3 +1,5 @@
+from urllib.parse import quote_plus
+
 from bacon.builders import QueryBuilder
 from bacon import errors
 from bacon.utils.strings import (
@@ -5,7 +7,6 @@ from bacon.utils.strings import (
     bsunescape,
     bssplit,
     ensure_unicode,
-    quote_plus,
 )
 from bacon.constants import MULTI_ARG_OPS
 
