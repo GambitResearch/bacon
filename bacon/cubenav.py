@@ -1,7 +1,4 @@
 #!/usr/bin/env python
-
-from __future__ import division
-
 from operator import attrgetter
 
 try:

@@ -1,7 +1,4 @@
 """Objects to build visualizations of query slices."""
-
-from __future__ import division
-
 from math import ceil
 from itertools import chain
 

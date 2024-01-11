@@ -1,7 +1,4 @@
 """Render a json result in Flask."""
-
-from __future__ import absolute_import
-
 import json
 import flask
 import bacon.observers.json

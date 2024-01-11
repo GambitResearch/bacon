@@ -1,6 +1,4 @@
 """Define what a cutting board and a slice are."""
-from __future__ import with_statement
-
 import re
 import operator
 from copy import copy, deepcopy

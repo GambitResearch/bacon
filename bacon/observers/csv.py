@@ -1,7 +1,4 @@
 """Export tables into CSV files."""
-
-from __future__ import absolute_import
-
 import csv
 from datetime import date
 from six.moves import xrange

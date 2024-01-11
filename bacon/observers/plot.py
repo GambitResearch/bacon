@@ -1,5 +1,3 @@
-from __future__ import division
-
 from operator import itemgetter
 
 from bacon.observers import Viewer
