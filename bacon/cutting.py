@@ -24,10 +24,8 @@ logger.setLevel(logging.INFO)
 
 try:
     xrange
-    text_type = unicode
 except NameError:
     xrange = range
-    text_type = str
 
 
 class CuttingBoard:
@@ -690,10 +688,10 @@ class LabeledValue:
         return self.label.cls(self.value, self.record)
 
     def __unicode__(self):
-        return text_type(self.pretty)
+        return str(self.pretty)
 
     def __str__(self):
-        return text_type(self.pretty)
+        return str(self.pretty)
 
     @property
     def excel(self):

@@ -879,7 +879,8 @@ class QuarterLabelMixin:
     def pretty(self, d, record=None):
         if not d:
             return "Unknown"
-        return b"Q%d\xA0%d".decode("latin1") % ((d.month - 1) // 3 + 1, d.year)
+        quarter_num = (d.month - 1) // 3 + 1
+        return f"Q{quarter_num}\xA0{d.year}"
 
     def parse(self, s):
         # parse -1 like "1 quarter ago"

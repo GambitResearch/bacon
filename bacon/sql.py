@@ -13,11 +13,6 @@ import logging
 logger = logging.getLogger("bacon.sql")
 logger.setLevel(logging.DEBUG)
 
-try:
-    basestring
-except NameError:
-    basestring = str, bytes
-
 
 class SqlQuery:
     def __init__(self):
@@ -199,7 +194,7 @@ class ConnectionFactory(BaseConnectionFactory):
         self.dsn = dsn
 
     def getconn(self):
-        if isinstance(self.dsn, basestring):
+        if isinstance(self.dsn, str):
             return psycopg2.connect(self.dsn)
         else:
             return psycopg2.connect(**self.dsn)

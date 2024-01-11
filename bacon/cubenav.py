@@ -3,10 +3,8 @@ from operator import attrgetter
 
 try:
     from itertools import imap
-
-    text_type = unicode
 except ImportError:
-    text_type = str
+    pass
 
 from bacon.cubequery import CubeQuery
 from collections import namedtuple
@@ -128,8 +126,8 @@ class Navigator:
                 name=name,
                 op=op,
                 value=value,
-                str_value=text_type(value),
-                pretty_name=text_type(label),
+                str_value=str(value),
+                pretty_name=str(label),
                 pretty_op=self._pretty_op.get(op, op),
                 pretty_value=pretty_value,
                 query_without=query.remove_filter(name, value, op),
