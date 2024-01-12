@@ -23,14 +23,14 @@ class CubeDefTestCase(unittest.TestCase):
         cd = CubeDef()
         cd.add_label(Label("year", lambda r: r.date.year))
         cd.add_label(Label("month", lambda r: r.date.month))
-        cd.add_label("date")
+        cd.add_label(Label("date"))
         cd.add_hierarchy("year", "month")
         cd.add_hierarchy("month", "date")
 
-        cd.add_label("item")
-        cd.add_label("place")
+        cd.add_label(Label("item"))
+        cd.add_label(Label("place"))
 
-        cd.add_measure("number")
+        cd.add_measure(Label("number"))
         cd.add_measure(Measure("twice", lambda r: 2 * r.number))
 
         return cd
