@@ -12,7 +12,7 @@ setup(
     packages=packages,
     zip_safe=False,
     include_package_data=True,
-    install_requires=["networkx>=1.1,<2.0", "pytz"],
+    install_requires=["networkx>=3.0", "pytz"],
     use_scm_version={"version_scheme": "post-release"},
     setup_requires=["setuptools_scm"],
     python_requires=">=3.6",
