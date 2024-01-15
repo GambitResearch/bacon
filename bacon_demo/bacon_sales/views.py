@@ -21,7 +21,7 @@ class SalesTable(Table):
 
 class SalesPlot(TimePlotData):
     def get_query(self):
-        q = super(SalesPlot, self).get_query()
+        q = super().get_query()
 
         for name in q.pivot:
             q = q.unset_pivot(name)

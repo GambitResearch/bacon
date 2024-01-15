@@ -20,13 +20,11 @@ may provide a mixin with the report logic and use it to create CustomizedTable,
 CustomizedPlot etc.
 """
 
-import six
-
 from bacon.cubequery import CubeQuery
 from bacon.cubenav import Navigator
 
 
-class Controller(object):
+class Controller:
     def __init__(self, name, builder, cutboard):
         self.name = name
         self.builder = builder
@@ -75,14 +73,13 @@ class Controller(object):
         try:
             return self.cutboard.slice(query)
         except (TypeError, AttributeError, KeyError) as e:
-            msg = "%s: %s" % (e.__class__.__name__, e)
-            six.reraise(Exception, Exception(msg))
+            raise Exception(f"{e.__class__.__name__}: {e}") from e
 
     def get_value(self, param):
         return self.builder.get_value(param)
 
 
-class Viewer(object):
+class Viewer:
     def __init__(self, name, controller):
         self.name = name
         self.controller = controller

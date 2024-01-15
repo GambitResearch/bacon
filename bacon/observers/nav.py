@@ -7,11 +7,11 @@ class NavPanel(Viewer):
     """A container for `NavWidget` to be rendered on an interface."""
 
     def __init__(self, name, controller, widgets=None, **kwargs):
-        super(NavPanel, self).__init__(name, controller, **kwargs)
+        super().__init__(name, controller, **kwargs)
         self.widgets = widgets or []
 
 
-class NavWidget(object):
+class NavWidget:
     """An object displayed in a `NavPanel` allowing customised navigation."""
 
     def __init__(self, label):
@@ -26,7 +26,7 @@ class DatesRangeWidget(NavWidget):
         if toolkit not in supported:
             raise ValueError("toolkit not supported: %s", toolkit)
 
-        super(DatesRangeWidget, self).__init__(label)
+        super().__init__(label)
         # axis is the name of one of the axis in the time dimension to handle
         # it should be rendered as a date (yyyy-mm-dd), so day or week is fine.
         self.axis = axis
@@ -71,7 +71,7 @@ class StringFilterWidget(NavWidget):
     """A widget allowing to filter on an axis."""
 
     def __init__(self, label, axis, op="eq"):
-        super(StringFilterWidget, self).__init__(label)
+        super().__init__(label)
         self.axis = axis
         self.op = op
 
@@ -93,11 +93,11 @@ class ButtonsWidget(NavWidget):
     """A widget container for `Button`."""
 
     def __init__(self, label, buttons):
-        super(ButtonsWidget, self).__init__(label)
+        super().__init__(label)
         self.buttons = buttons
 
 
-class Button(object):
+class Button:
     """A button redirecting to a new query when clicked."""
 
     def __init__(self, label, image_url=None, builder=None):
@@ -117,7 +117,7 @@ class FixedQueryButton(Button):
     """A button that returns always the same query."""
 
     def __init__(self, label, query, **kwargs):
-        super(FixedQueryButton, self).__init__(label, **kwargs)
+        super().__init__(label, **kwargs)
         self._query = query
 
     def get_url(self, widget, panel):
@@ -130,7 +130,7 @@ class FilterButton(Button):
     REMOVE = "__REMOVE__"
 
     def __init__(self, label, axis, value, **kwargs):
-        super(FilterButton, self).__init__(label, **kwargs)
+        super().__init__(label, **kwargs)
         self.axis = axis
         self.value = value
 

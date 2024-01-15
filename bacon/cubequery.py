@@ -54,7 +54,7 @@ def related_ops(op):
     return set()
 
 
-class CubeQuery(object):
+class CubeQuery:
     def __init__(self):
         self._axes = []
         self._values = []
@@ -64,7 +64,7 @@ class CubeQuery(object):
         self._pivots = set()
 
     def __repr__(self):
-        return "<%s dim=%s at 0x%08X>" % (self.__class__.__name__, self.dim, id(self))
+        return f"<{self.__class__.__name__} dim={self.dim} at 0x{id(self):08X}>"
 
     def copy(self):
         """Return a deep copy of the query."""

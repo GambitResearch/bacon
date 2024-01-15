@@ -13,13 +13,8 @@ import logging
 logger = logging.getLogger("bacon.sql")
 logger.setLevel(logging.DEBUG)
 
-try:
-    basestring
-except NameError:
-    basestring = str, bytes
 
-
-class SqlQuery(object):
+class SqlQuery:
     def __init__(self):
         self._prequerylist = []
         self._ctelist = []
@@ -78,7 +73,7 @@ class SqlQuery(object):
 
         sql = deepcopy(self)
         sql._columns.add(column)
-        sql._selectlist.append("(%s) AS %s" % (expression, self.quote_ident(column)))
+        sql._selectlist.append(f"({expression}) AS {self.quote_ident(column)}")
         sql._grouplist.append(expression)
         return sql
 
@@ -93,7 +88,7 @@ class SqlQuery(object):
 
         sql = deepcopy(self)
         sql._columns.add(column)
-        sql._selectlist.append("(%s) AS %s" % (expression, self.quote_ident(column)))
+        sql._selectlist.append(f"({expression}) AS {self.quote_ident(column)}")
         return sql
 
     def add_filter(self, expression, *values):
@@ -179,7 +174,7 @@ class SqlQuery(object):
         return args
 
 
-class BaseConnectionFactory(object):
+class BaseConnectionFactory:
     """An abstract object returning and disposing database connections."""
 
     def getconn(self):
@@ -199,7 +194,7 @@ class ConnectionFactory(BaseConnectionFactory):
         self.dsn = dsn
 
     def getconn(self):
-        if isinstance(self.dsn, basestring):
+        if isinstance(self.dsn, str):
             return psycopg2.connect(self.dsn)
         else:
             return psycopg2.connect(**self.dsn)
@@ -228,7 +223,7 @@ class SqlCuttingBoard(CuttingBoard):
         self.sql = sql
         self.connection_factory = connection_factory
 
-        super(SqlCuttingBoard, self).__init__(cubedef, dataset=())
+        super().__init__(cubedef, dataset=())
 
     @with_connection_method
     def _make_slice(self, cnn, query):
@@ -301,7 +296,7 @@ class DjangoCuttingBoard(CuttingBoard):
         self.only = set()
         self.select_related = set()
         self.prefetch_related = set()
-        super(DjangoCuttingBoard, self).__init__(cubedef, dataset=())
+        super().__init__(cubedef, dataset=())
 
     def _add_label(self, label):
         for select_related in label.django_select_related:
@@ -342,7 +337,7 @@ class DjangoCuttingBoard(CuttingBoard):
         return queryset
 
 
-class RowsProxy(object):
+class RowsProxy:
     """A container to return a list of result still supporting pagination
 
     Used for the interaction with a DetailsTable.

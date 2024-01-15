@@ -1,20 +1,8 @@
 """Objects to build visualizations of query slices."""
-
-from __future__ import division
-
 from math import ceil
 from itertools import chain
 
-try:
-    from itertools import izip
-except ImportError:
-    izip = zip
 from collections import defaultdict
-
-try:
-    xrange
-except NameError:
-    xrange = range
 
 from bacon import errors
 from bacon.observers import Viewer
@@ -27,7 +15,7 @@ from bacon.utils import cache
 
 class PaginatedViewer(Viewer):
     def __init__(self, name, controller, page_size=None, **kwargs):
-        super(PaginatedViewer, self).__init__(name, controller, **kwargs)
+        super().__init__(name, controller, **kwargs)
         self.page_size = page_size
         self._nrows = None
 
@@ -104,13 +92,13 @@ class PaginatedViewer(Viewer):
 
         def run(start, end):
             if end - start < 7:
-                for n in xrange(start, end):
+                for n in range(start, end):
                     yield link(n)
             else:
-                for n in xrange(start, start + 2):
+                for n in range(start, start + 2):
                     yield link(n)
                 yield label("...")
-                for n in xrange(end - 2, end):
+                for n in range(end - 2, end):
                     yield link(n)
 
         return chain(
@@ -144,14 +132,14 @@ class PaginatedViewer(Viewer):
 
 class Table(PaginatedViewer):
     def __init__(self, name, controller, **kwargs):
-        super(Table, self).__init__(name, controller, **kwargs)
+        super().__init__(name, controller, **kwargs)
         self._widgets = defaultdict(list)
 
     def add_widget(self, widget, col_name=None):
         self._widgets[col_name].append(widget)
 
 
-class RowWidget(object):
+class RowWidget:
     def __init__(self, name, builder, label=None):
         self.name = name
         self.label = label or name
@@ -162,7 +150,7 @@ class RowWidget(object):
 # this must be specified somehow
 
 
-class BaseTableRenderer(object):
+class BaseTableRenderer:
     def __init__(self, table):
         self.table = table
         self._nrows = 0
@@ -232,7 +220,6 @@ class TableDetails(UrlMaker, BaseTableRenderer):
 
 
 class Table1D(UrlMaker, BaseTableRenderer):
-
     Row = namedtuple("Table1DRow", ["slice", "labels", "values"])
 
     def label_titles(self):
@@ -336,15 +323,14 @@ class Table1D(UrlMaker, BaseTableRenderer):
 
 
 class TablePivot(UrlMaker, BaseTableRenderer):
-
     Row = namedtuple("Table2DRow", ["slice", "labels", "values", "totals"])
 
     def __init__(self, table):
-        super(TablePivot, self).__init__(table)
+        super().__init__(table)
         self.pivot_labels = list(self.nav.pivot)
         for l in self.pivot_labels:
             if not l.allow_pivot:
-                raise errors.QueryError("can't pivot on %s" % l.name)
+                raise errors.QueryError(f"can't pivot on {l.name}")
 
     # TODO: everything that is not a method needs being an attribute. Django
     # doesn't need braces but other observers do
@@ -470,7 +456,7 @@ class TablePivot(UrlMaker, BaseTableRenderer):
 
     def _iter_row(self, slice, row_totals, col_totals):
         titles = self.value_titles()
-        for labels, ctot in izip(self.pivot_lvs(), col_totals):
+        for labels, ctot in zip(self.pivot_lvs(), col_totals):
             tmp_slice = slice
             try:
                 for label in labels:

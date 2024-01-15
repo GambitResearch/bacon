@@ -1,16 +1,5 @@
 #!/usr/bin/env python
-
-from __future__ import division
-
 from operator import attrgetter
-
-try:
-    from itertools import imap
-
-    text_type = unicode
-except ImportError:
-    text_type = str
-
 from bacon.cubequery import CubeQuery
 from collections import namedtuple
 from bacon.constants import MULTI_ARG_OPS
@@ -26,7 +15,7 @@ CurrentFilter = namedtuple(
 )
 
 
-class Navigator(object):
+class Navigator:
     """Allows interactive navigation around a dataset."""
 
     def __init__(self, name, builder, cubedef):
@@ -131,8 +120,8 @@ class Navigator(object):
                 name=name,
                 op=op,
                 value=value,
-                str_value=text_type(value),
-                pretty_name=text_type(label),
+                str_value=str(value),
+                pretty_name=str(label),
                 pretty_op=self._pretty_op.get(op, op),
                 pretty_value=pretty_value,
                 query_without=query.remove_filter(name, value, op),
@@ -280,7 +269,7 @@ class Navigator(object):
         return query
 
 
-class UrlMaker(object):
+class UrlMaker:
     """
     Helper mixin to make urls from something that has get_url and a navigator.
     """

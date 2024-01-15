@@ -1,11 +1,8 @@
 """Object to accumulate values"""
-
-from __future__ import division
-
 from math import sqrt
 
 
-class Accumulator(object):
+class Accumulator:
     def add(self, v, record):
         raise NotImplementedError
 
@@ -46,11 +43,11 @@ class Sum(Accumulator):
         return self
 
     def __repr__(self):
-        return "<%s (%r) at 0x%08X>" % (self.__class__.__name__, self.acc, id(self))
+        return f"<{self.__class__.__name__} ({self.acc!r}) at 0x{id(self):08X}>"
 
     @classmethod
     def manipulate_sql(self, sql, column, expression):
-        return sql.add_aggregate(column, "sum(%s)" % expression)
+        return sql.add_aggregate(column, f"sum({expression})")
 
 
 class Union(Accumulator):
@@ -105,7 +102,7 @@ class Max(Accumulator):
         return self
 
     def __repr__(self):
-        return "<%s (%r) at 0x%08X>" % (self.__class__.__name__, self.acc, id(self))
+        return f"<{self.__class__.__name__} ({self.acc!r}) at 0x{id(self):08X}>"
 
 
 class Min(Accumulator):
@@ -134,7 +131,7 @@ class Min(Accumulator):
         return self
 
     def __repr__(self):
-        return "<%s (%r) at 0x%08X>" % (self.__class__.__name__, self.acc, id(self))
+        return f"<{self.__class__.__name__} ({self.acc!r}) at 0x{id(self):08X}>"
 
 
 class Count(Accumulator):
@@ -154,7 +151,7 @@ class Count(Accumulator):
         return self
 
     def __repr__(self):
-        return "<%s (%r) at 0x%08X>" % (self.__class__.__name__, self.acc, id(self))
+        return f"<{self.__class__.__name__} ({self.acc!r}) at 0x{id(self):08X}>"
 
 
 class Average(Accumulator):
@@ -190,7 +187,7 @@ class Average(Accumulator):
         return self
 
     def __repr__(self):
-        return "<%s (%r items) at 0x%08X>" % (self.__class__.__name__, self.n, id(self))
+        return f"<{self.__class__.__name__} ({self.n!r} items) at 0x{id(self):08X}>"
 
 
 class StdDev(Accumulator):
@@ -231,7 +228,7 @@ class StdDev(Accumulator):
         return Inconsistent
 
     def __repr__(self):
-        return "<%s (%r items) at 0x%08X>" % (self.__class__.__name__, self.n, id(self))
+        return f"<{self.__class__.__name__} ({self.n!r} items) at 0x{id(self):08X}>"
 
 
 class _Unused(Accumulator):
@@ -296,7 +293,7 @@ class Group(Accumulator):
         return self
 
     def __repr__(self):
-        return "<%s (%r) at 0x%08X>" % (self.__class__.__name__, self.val, id(self))
+        return f"<{self.__class__.__name__} ({self.val!r}) at 0x{id(self):08X}>"
 
 
 def LabeledAcc(getter, acc):
@@ -385,11 +382,7 @@ def RatioSum(attr_num, attr_denom, expr_num=None, expr_denom=None):
             return self
 
         def __repr__(self):
-            return "<%s (%r) at 0x%08X>" % (
-                self.__class__.__name__,
-                self.accs,
-                id(self),
-            )
+            return f"<{self.__class__.__name__} ({self.accs!r}) at 0x{id(self):08X}>"
 
         @classmethod
         def manipulate_sql(self, sql, column, expression):

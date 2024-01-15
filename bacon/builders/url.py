@@ -1,3 +1,5 @@
+from urllib.parse import quote_plus
+
 from bacon.builders import QueryBuilder
 from bacon import errors
 from bacon.utils.strings import (
@@ -5,7 +7,6 @@ from bacon.utils.strings import (
     bsunescape,
     bssplit,
     ensure_unicode,
-    quote_plus,
 )
 from bacon.constants import MULTI_ARG_OPS
 
@@ -20,9 +21,9 @@ def encode_query(q):
         k = quote_plus(k)
         if isinstance(vv, list):
             for v in vv:
-                rv.append("%s=%s" % (k, quote_plus(v, safe=":/")))
+                rv.append(f"{k}={quote_plus(v, safe=':/')}")
         else:
-            rv.append("%s=%s" % (k, quote_plus(vv, safe=":/")))
+            rv.append(f"{k}={quote_plus(vv, safe=':/')}")
 
     return "&".join(rv)
 
@@ -46,7 +47,7 @@ class UrlQueryBuilder(QueryBuilder):
         self, context, cubedef=None, base_url=None, query_location=IN_QUERY, **kwargs
     ):
         """The context should be a parameters mapping."""
-        super(UrlQueryBuilder, self).__init__(context, cubedef, **kwargs)
+        super().__init__(context, cubedef, **kwargs)
         self.base_url = base_url if base_url is not None else "."
         self.query_dict = context
         self.query_location = query_location
@@ -60,7 +61,7 @@ class UrlQueryBuilder(QueryBuilder):
             tokens = bssplit(chunk, ":")
             cmd = tokens.pop(0)
             if not hasattr(self, cmd):
-                raise errors.QueryError("unknown command: '%s'" % cmd)
+                raise errors.QueryError(f"unknown command: '{cmd}'")
 
             yield cmd, list(map(bsunescape, tokens))
 
@@ -102,7 +103,7 @@ class UrlQueryBuilder(QueryBuilder):
 
         else:
             raise errors.QueryError(
-                "bad number of arguments for a filter: %d" % len(args)
+                f"bad number of arguments for a filter: {len(args)}"
             )
 
         # i have name, op, value here
@@ -145,7 +146,7 @@ class UrlQueryBuilder(QueryBuilder):
 
         else:
             raise ValueError(
-                "unexpected value for query_location: %r" % self.query_location
+                f"unexpected value for query_location: {self.query_location!r}"
             )
 
     # TODO: merge to_string and get_url
@@ -170,7 +171,7 @@ class UrlQueryBuilder(QueryBuilder):
 
         else:
             raise ValueError(
-                "unexpected value for query_location: %r" % self.query_location
+                f"unexpected value for query_location: {self.query_location!r}"
             )
 
     def to_string(self, query, name):
@@ -192,7 +193,7 @@ class UrlQueryBuilder(QueryBuilder):
             else:
                 op = ":" + op + ":"
 
-            yield "f:%s%s%s" % (str(name), str(op), value)
+            yield f"f:{str(name)}{str(op)}{value}"
 
         pivot = query.pivot
         for name in query.axes:

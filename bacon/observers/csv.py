@@ -1,11 +1,6 @@
 """Export tables into CSV files."""
-
-from __future__ import absolute_import
-
 import csv
 from datetime import date
-from six.moves import xrange
-from six import text_type, binary_type, PY2, PY3
 
 from bacon.observers.tables import Table1D, TablePivot
 
@@ -23,7 +18,7 @@ def render_csv(file, table, **kwargs):
     return cw.writer
 
 
-class CSVWrapper(object):
+class CSVWrapper:
     """Wrap the csv writer for easier access."""
 
     def __init__(self, writer):
@@ -36,10 +31,7 @@ class CSVWrapper(object):
         elif isinstance(data, date):
             data = str(data)
 
-        elif PY2 and isinstance(data, text_type):
-            data = data.encode("utf8")
-
-        elif PY3 and isinstance(data, binary_type):
+        elif isinstance(data, bytes):
             data = data.decode("utf8")
 
         else:
@@ -49,7 +41,7 @@ class CSVWrapper(object):
 
     def write_merge(self, colspan, data, **kwargs):
         self.write(data)
-        for i in xrange(colspan - 1):
+        for i in range(colspan - 1):
             self.row.append("")
 
     def newline(self):
@@ -59,9 +51,9 @@ class CSVWrapper(object):
 
 def render_table_1d(ws, table):
     for t in table.label_titles():
-        ws.write(text_type(t))
+        ws.write(str(t))
     for t in table.value_titles():
-        ws.write(text_type(t))
+        ws.write(str(t))
     ws.newline()
 
     for slice, labels, values in table.rows():
@@ -70,7 +62,7 @@ def render_table_1d(ws, table):
             if label and isinstance(label.value, date):
                 ws.write(label.value)
             else:
-                ws.write(text_type(label))
+                ws.write(str(label))
 
         for v in values:
             ws.write(v.value)
@@ -80,17 +72,17 @@ def render_table_1d(ws, table):
 def render_table_pivot(ws, table):
     # Pivot values lines
     for pivot_label, pivot_lvs in table.pivot_titles():
-        ws.write_merge(len(table.label_titles()), text_type(pivot_label))
+        ws.write_merge(len(table.label_titles()), str(pivot_label))
         for label in pivot_lvs:
-            ws.write_merge(len(table.value_titles()), text_type(label))
+            ws.write_merge(len(table.value_titles()), str(label))
         ws.newline()
 
     # Column titles line
     for t in table.label_titles():
-        ws.write(t and text_type(t) or None)
+        ws.write(str(t) if t else None)
     for label in table.pivot_lvs():
         for t in table.value_titles():
-            ws.write(text_type(t))
+            ws.write(str(t))
     ws.newline()
 
     # Table data
@@ -102,7 +94,7 @@ def render_table_pivot(ws, table):
             elif isinstance(label.value, date):
                 ws.write(label.value)
             else:
-                ws.write(text_type(label))
+                ws.write(str(label))
 
         for v in values:
             ws.write(v.value)

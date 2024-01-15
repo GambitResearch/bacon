@@ -140,7 +140,7 @@ def debug(parser, token):
         tag, v = token.split_contents()
     except ValueError:
         raise template.TemplateSyntaxError(
-            "%r takes a single value" % token.contents.split()[0]
+            f"{token.contents.split()[0]!r} takes a single value"
         )
 
     return DebugNode(v)

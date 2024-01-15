@@ -11,6 +11,6 @@ class FlaskQueryBuilder(UrlQueryBuilder):
         if context.method == "GET":
             query_dict = dict(context.args.items())
         else:
-            raise NotImplementedError("method %s not supported" % context.method)
+            raise NotImplementedError(f"method {context.method} not supported")
 
-        super(FlaskQueryBuilder, self).__init__(query_dict, cubedef=cubedef, **kwargs)
+        super().__init__(query_dict, cubedef=cubedef, **kwargs)

@@ -4,7 +4,6 @@ import re
 from calendar import day_name, month_name
 from datetime import date, datetime, timedelta
 from operator import attrgetter
-from six import string_types
 
 import networkx as nx
 
@@ -15,20 +14,7 @@ from bacon.utils.strings import ensure_unicode
 from bacon.utils.dateutils import date_to_quarter
 
 
-try:
-    unicode
-except NameError:
-    # Python 3
-    def strftime_latin1(dateval, template):
-        return dateval.strftime(template.decode("latin1"))
-
-else:
-    # Python 2
-    def strftime_latin1(dateval, template):
-        return dateval.strftime(template).decode("latin1")
-
-
-class DataDef(object):
+class DataDef:
     """Definition of a dataset.
 
     The datadef is similar to a table schema in a relational database: it
@@ -56,7 +42,7 @@ class DataDef(object):
             yield Row(self, raw_object)
 
 
-class Row(object):
+class Row:
     """
     A simple wrapper that makes a row of data act like a dictionary,
     based on the DataDef fields.
@@ -70,7 +56,7 @@ class Row(object):
         return self.datadef[field_name].extract(self.raw)
 
 
-class CubeDef(object):
+class CubeDef:
     """Definition of a dataset and the different ways to read it.
 
     The cubedef extends the definition of the data beyond what you get
@@ -86,21 +72,21 @@ class CubeDef(object):
     def add_label(self, label):
         """Add a new label definition."""
         if not isinstance(label, Label):
-            raise TypeError("expected 'Label' instance, %r got instead" % label)
+            raise TypeError(f"expected 'Label' instance, {label!r} got instead")
 
         name = label.name
         self._labels[name] = label
         self._graph.add_node(name)
 
         if label.child_of:
-            if isinstance(label.child_of, string_types):
+            if isinstance(label.child_of, str):
                 self.add_hierarchy(label.child_of, name)
             else:
                 for parent in label.child_of:
                     self.add_hierarchy(parent, name)
 
         if label.parent_of:
-            if isinstance(label.parent_of, string_types):
+            if isinstance(label.parent_of, str):
                 self.add_hierarchy(name, label.parent_of)
             else:
                 for child in label.parent_of:
@@ -116,7 +102,7 @@ class CubeDef(object):
         try:
             return self._labels[name]
         except KeyError:
-            raise errors.DataError("label not defined: '%s'" % name)
+            raise errors.DataError(f"label not defined: '{name}'")
 
     def get_labels(self):
         """Return the list of all the labels defined."""
@@ -125,7 +111,7 @@ class CubeDef(object):
     def add_measure(self, measure):
         """Add a new measure definition."""
         if not isinstance(measure, Label):
-            raise TypeError("expected 'Label' instance, %r got instead" % measure)
+            raise TypeError(f"expected 'Label' instance, {measure!r} got instead")
 
         self._measures[measure.name] = measure
 
@@ -140,7 +126,7 @@ class CubeDef(object):
             try:
                 return self._labels[name]
             except KeyError:
-                raise errors.DataError("measure not defined: '%s'" % name)
+                raise errors.DataError(f"measure not defined: '{name}'")
 
     def get_measures(self):
         """Return the list of all the measures defined."""
@@ -197,7 +183,7 @@ class CubeDef(object):
         return list(map(self.get_label, descendants(self._graph, name)))
 
 
-class Field(object):
+class Field:
     """
     A basic field that can extract and render data from a record.  If
     you want to filter on it, use the Label class instead.
@@ -216,7 +202,7 @@ class Field(object):
         return self._name
 
     def __repr__(self):
-        return "<%s %r at 0x%08X>" % (type(self).__name__, self._name, id(self))
+        return f"<{type(self).__name__} {self._name!r} at 0x{id(self):08X}>"
 
     def __unicode__(self):
         return self.title
@@ -225,7 +211,7 @@ class Field(object):
         return self.title
 
     def __eq__(self, other):
-        if not isinstance(other, string_types):
+        if not isinstance(other, str):
             other = other.name
         return self._name == other
 
@@ -245,7 +231,7 @@ class Field(object):
         return ensure_unicode(value)
 
 
-class Label(object):
+class Label:
     """Definition of a label on the records in a dataset.
 
     The label can be either subclassed or populated by init arguments.
@@ -274,7 +260,6 @@ class Label(object):
         allow_pivot=True,
         hidden=False,
     ):
-
         if isinstance(name_or_field, Field):
             self.field = name_or_field
             if extract:
@@ -300,7 +285,7 @@ class Label(object):
         self.parent_of = parent_of
         self.dimension = dimension
 
-        self.cls = isinstance(cls, string_types) and (lambda v, record: cls) or cls
+        self.cls = isinstance(cls, str) and (lambda v, record: cls) or cls
         self.allow_pivot = allow_pivot
         self.hidden = hidden
         self._sql_expression = sql_expression or self.field.name
@@ -345,12 +330,12 @@ class Label(object):
         return self.field.pretty(value, record)
 
     def __repr__(self):
-        return "<%s %r at 0x%08X>" % (type(self).__name__, self.name, id(self))
+        return f"<{type(self).__name__} {self.name!r} at 0x{id(self):08X}>"
 
     def __eq__(self, other):
         if isinstance(other, type(self)):
             return self.field == other.field
-        elif isinstance(other, string_types):
+        elif isinstance(other, str):
             return self.field == other
         else:
             return None
@@ -428,7 +413,7 @@ class Label(object):
         if type(self.django_expression) == str:
             if op not in self.django_opmap:
                 raise NotImplementedError(
-                    "The operation %s is not implemented as a django query filter" % op
+                    f"The operation {op} is not implemented as a django query filter"
                 )
             qop = self.django_opmap[op]
 
@@ -481,11 +466,11 @@ class Label(object):
             if None in value:
                 value = value - set([None])
                 if op == "in":
-                    filter = "(((%s) is null) or %s)" % (self.sql_expression, filter)
+                    filter = f"((({self.sql_expression}) is null) or {filter})"
 
             else:
                 if op == "ni":
-                    filter = "(((%s) is null) or %s)" % (self.sql_expression, filter)
+                    filter = f"((({self.sql_expression}) is null) or {filter})"
 
             value = tuple(value)
 
@@ -505,25 +490,25 @@ class NullableLabel(Label):
     """A label that can handle None values outside the data type space."""
 
     def __init__(self, name, none_value="", none_label="(none)", **kwargs):
-        super(NullableLabel, self).__init__(name, **kwargs)
+        super().__init__(name, **kwargs)
         self.none_value = none_value
         self.none_label = none_label
 
     def pretty(self, value, record=None):
         if value is not None:
-            return super(NullableLabel, self).pretty(value, record)
+            return super().pretty(value, record)
         else:
             return self.none_label
 
     def parse(self, s):
         if s != self.none_value:
-            return super(NullableLabel, self).parse(s)
+            return super().parse(s)
         else:
             return None
 
     def unparse(self, v):
         if v is not None:
-            return super(NullableLabel, self).unparse(v)
+            return super().unparse(v)
         else:
             return self.none_value
 
@@ -539,7 +524,7 @@ class AttributeLabel(NullableLabel):
         self.attr = attr
         if "sql_expression" not in kwargs:
             kwargs["sql_expression"] = attr
-        super(AttributeLabel, self).__init__(name, extract=extract, **kwargs)
+        super().__init__(name, extract=extract, **kwargs)
 
 
 class SetLabel(NullableLabel):
@@ -555,7 +540,7 @@ class SetLabel(NullableLabel):
         return "hasonly"
 
     def pretty(self, value, record=None):
-        if isinstance(value, string_types):
+        if isinstance(value, str):
             return value
         elif value is None or value == ((None,)):
             return self.none_label
@@ -602,7 +587,7 @@ class SetLabel(NullableLabel):
             return "((%s) @> %%s)" % self.field.name, [value]
         elif op in ("hasonly", "equals"):  # or op == 'eq':
             if value == "{}":
-                return "((%s) is null)" % self.field.name, []
+                return f"(({self.field.name}) is null)", []
             else:
                 return "(((%s) @> (%%s)) and ((%s) <@ (%%s)))" % (
                     self.field.name,
@@ -619,7 +604,7 @@ class SetLabel(NullableLabel):
             except ValueError:
                 # We prefer to raise our own error
                 pass
-        raise ValueError("Unexpected op %s for SetLabel %s" % (op, self.field.name))
+        raise ValueError(f"Unexpected op {op} for SetLabel {self.field.name}")
 
 
 class SetLabelAny(SetLabel):
@@ -659,7 +644,7 @@ class DatetimeDateTypeLabel(Label):
         try:
             return datetime.strptime(s, self.DATETIME_FORMAT)
         except ValueError:
-            raise errors.DataError("bad date: {!r}".format(s))
+            raise errors.DataError(f"bad date: {s!r}")
 
     def unparse(self, v):
         return v.strftime(self.DATETIME_FORMAT) if v else None
@@ -669,7 +654,7 @@ class DatetimeTypeLabel(DatetimeDateTypeLabel):
     DATETIME_FORMAT = "%Y-%m-%dT%H:%M"
 
     def parse(self, s):
-        datetime_obj = super(DatetimeTypeLabel, self).parse(s)
+        datetime_obj = super().parse(s)
         if (
             datetime_obj.tzinfo is None
             or datetime_obj.tzinfo.utcoffset(datetime_obj) is None
@@ -680,7 +665,7 @@ class DatetimeTypeLabel(DatetimeDateTypeLabel):
 
 class DateTypeLabel(DatetimeDateTypeLabel):
     def parse(self, s):
-        return super(DateTypeLabel, self).parse(s).date()
+        return super().parse(s).date()
 
 
 class DatetimeDateHierarchyLabelMixin(DatetimeDateTypeLabel):
@@ -689,14 +674,14 @@ class DatetimeDateHierarchyLabelMixin(DatetimeDateTypeLabel):
 
     def __init__(self, name_or_field, **kwargs):
         self._title = kwargs.get("title", self.DEFAULT_TITLE)
-        super(DatetimeDateHierarchyLabelMixin, self).__init__(name_or_field, **kwargs)
+        super().__init__(name_or_field, **kwargs)
 
     def __unicode__(self):
         return self.title
 
     @property
     def name(self):
-        return "%s%s" % (self.field.name, self.SUFFIX)
+        return f"{self.field.name}{self.SUFFIX}"
 
     def _convert_datetime_if_required(self, rv):
         return rv
@@ -740,7 +725,7 @@ _re_delta = re.compile(r"-?\d+$")
 
 class DatetimeDateTruncLabelMixin(DatetimeDateHierarchyLabelMixin):
     def add_sql_filter(self, sql, op, value):
-        sql = super(DatetimeDateTruncLabelMixin, self).add_sql_filter(sql, op, value)
+        sql = super().add_sql_filter(sql, op, value)
 
         if op in ("ge", "gt", "eq") and not isinstance(self, DayLabel):
             # Leave out Daylabel because it doesn't truncate.
@@ -757,16 +742,13 @@ class DatetimeDateTruncLabelMixin(DatetimeDateHierarchyLabelMixin):
 class DateTruncLabel(DateHierarchyLabel, DatetimeDateTruncLabelMixin):
     @property
     def sql_expression(self):
-        return "date_trunc('%s', %s)::date" % (
-            self.SQL_DATE_FIELD,
-            self._sql_expression,
-        )
+        return f"date_trunc('{self.SQL_DATE_FIELD}', {self._sql_expression})::date"
 
 
 class DatetimeTruncLabel(DatetimeHierarchyLabel, DatetimeDateTruncLabelMixin):
     @property
     def sql_expression(self):
-        return "date_trunc('%s', %s)" % (self.SQL_DATE_FIELD, self._sql_expression)
+        return f"date_trunc('{self.SQL_DATE_FIELD}', {self._sql_expression})"
 
 
 class DatetimePartLabel(DatetimeDateHierarchyLabelMixin):
@@ -798,13 +780,10 @@ class DatetimePartLabel(DatetimeDateHierarchyLabelMixin):
 
     @property
     def sql_expression(self):
-        return "date_part('%s', %s)::integer" % (
-            self.SQL_DATE_FIELD,
-            self._sql_expression,
-        )
+        return f"date_part('{self.SQL_DATE_FIELD}', {self._sql_expression})::integer"
 
 
-class YearLabelMixin(object):
+class YearLabelMixin:
     SUFFIX = "_year"
     DEFAULT_TITLE = "Year"
     DATETIME_FORMAT = "%Y"
@@ -839,7 +818,7 @@ class ISOYearLabel(DatetimePartLabel):
         return date.isocalendar()[0]
 
 
-class MonthLabelMixin(object):
+class MonthLabelMixin:
     SUFFIX = "_month"
     DEFAULT_TITLE = "Month"
     FORMAT = "%Y-%m"
@@ -850,7 +829,7 @@ class MonthLabelMixin(object):
         return date(d.year, d.month, 1)
 
     def pretty(self, d, record=None):
-        return d and strftime_latin1(d, b"%b\xA0%Y") or "Unknown"
+        return d and d.strftime("%b\xA0%Y") or "Unknown"
 
     def parse(self, s):
         # parse -6 like "6 months ago"
@@ -860,7 +839,7 @@ class MonthLabelMixin(object):
             year, month = divmod(nmonths + int(s), 12)
             return date(year, month + 1, 1)
         else:
-            return super(MonthLabelMixin, self).parse(s)
+            return super().parse(s)
 
 
 class MonthLabel(MonthLabelMixin, DateTruncLabel):
@@ -887,7 +866,7 @@ class MonthOfYearLabel(DatetimePartLabel):
         return date.month
 
 
-class QuarterLabelMixin(object):
+class QuarterLabelMixin:
     SUFFIX = "_quarter"
     DEFAULT_TITLE = "Quarter"
     DATETIME_FORMAT = "%Y-%m"
@@ -900,14 +879,15 @@ class QuarterLabelMixin(object):
     def pretty(self, d, record=None):
         if not d:
             return "Unknown"
-        return b"Q%d\xA0%d".decode("latin1") % ((d.month - 1) // 3 + 1, d.year)
+        quarter_num = (d.month - 1) // 3 + 1
+        return f"Q{quarter_num}\xA0{d.year}"
 
     def parse(self, s):
         # parse -1 like "1 quarter ago"
         if _re_delta.match(s):
             return date_to_quarter(date.today(), int(s))
         else:
-            d = super(QuarterLabelMixin, self).parse(s)
+            d = super().parse(s)
             return self.classify(d)
 
 
@@ -932,7 +912,7 @@ class QuarterNumLabel(DatetimePartLabel):
         return ((date.month - 1) // 3 * 3) + 1
 
 
-class WeekLabelMixin(object):
+class WeekLabelMixin:
     SUFFIX = "_week"
     DEFAULT_TITLE = "Week"
     FORMAT = "%Y-%m-%d"
@@ -947,7 +927,7 @@ class WeekLabelMixin(object):
             return "Unknown"
         d1 = d - timedelta(days=d.isoweekday() - 1)
         d2 = d1 + timedelta(days=6)
-        return "%s..%s" % (d1.strftime("%d %b"), d2.strftime("%d %b %Y"))
+        return f"{d1.strftime('%d %b')}..{d2.strftime('%d %b %Y')}"
 
     def parse(self, s):
         # parse -4 like "4 weeks ago"
@@ -956,7 +936,7 @@ class WeekLabelMixin(object):
             day -= timedelta(days=day.isoweekday() - 1)  # first day of the week
             return day + timedelta(days=7 * int(s))
         else:
-            return super(WeekLabelMixin, self).parse(s)
+            return super().parse(s)
 
 
 class WeekLabel(WeekLabelMixin, DateTruncLabel):
@@ -984,7 +964,7 @@ class ISOWeekNumLabel(DatetimePartLabel):
         return date.isocalendar()[1]
 
 
-class DayLabelMixin(object):
+class DayLabelMixin:
     SUFFIX = "_day"
     DEFAULT_TITLE = "Day"
     FORMAT = "%Y-%m-%d"
@@ -995,14 +975,14 @@ class DayLabelMixin(object):
         return date(d.year, d.month, d.day)
 
     def pretty(self, d, record=None):
-        return d and strftime_latin1(d, b"%a\xA0%Y-%m-%d") or "Unknown"
+        return d and d.strftime("%a\xA0%Y-%m-%d") or "Unknown"
 
     def parse(self, s):
         # parse -30 like "30 days ago"
         if _re_delta.match(s):
             return date.today() + timedelta(days=int(s))
         else:
-            return super(DayLabelMixin, self).parse(s)
+            return super().parse(s)
 
     def to_excel(self, value, record=None):
         return value
@@ -1054,14 +1034,14 @@ class HourLabel(DatetimeTruncLabel):
         return datetime(d.year, d.month, d.day, hour=getattr(d, "hour", 0))
 
     def pretty(self, d, record=None):
-        return d and strftime_latin1(d, b"%a\xA0%Y-%m-%dT%H") or "Unknown"
+        return d and d.strftime("%a\xA0%Y-%m-%dT%H") or "Unknown"
 
     def parse(self, s):
         # parse -30 like "30 hours ago"
         if _re_delta.match(s):
             return date.today() + timedelta(hours=int(s))
         else:
-            return super(HourLabel, self).parse(s)
+            return super().parse(s)
 
 
 class WeekdayLabel(DatetimePartLabel):
@@ -1099,7 +1079,7 @@ class Measure(Label):
     def __init__(self, name, cls="measure", show_by_default=True, **kwargs):
         if "acc" not in kwargs:
             kwargs["acc"] = accs.Sum
-        super(Measure, self).__init__(name, cls=cls, **kwargs)
+        super().__init__(name, cls=cls, **kwargs)
         self.show_by_default = show_by_default
 
     def add_sql_measure(self, sql):
@@ -1110,7 +1090,7 @@ class AttributeMeasure(Measure, AttributeLabel):
     def __init__(self, name, **kwargs):
         if "none_value" not in kwargs:
             kwargs["none_value"] = ""
-        super(AttributeMeasure, self).__init__(name, **kwargs)
+        super().__init__(name, **kwargs)
 
 
 class AttributeRatioMeasure(AttributeMeasure):
@@ -1134,4 +1114,4 @@ class AttributeRatioMeasure(AttributeMeasure):
             else:
                 return ratio
 
-        super(AttributeRatioMeasure, self).__init__(name, extract=ratio, **kwargs)
+        super().__init__(name, extract=ratio, **kwargs)

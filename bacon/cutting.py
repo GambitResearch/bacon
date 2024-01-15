@@ -1,15 +1,9 @@
 """Define what a cutting board and a slice are."""
-from __future__ import with_statement
-
 import re
 import operator
 from copy import copy, deepcopy
 from functools import wraps
 
-try:
-    from itertools import ifilter
-except ImportError:
-    ifilter = filter
 from threading import RLock
 from collections import defaultdict, deque
 
@@ -24,15 +18,7 @@ logger = logging.getLogger("bacon.cutting")
 logger.setLevel(logging.INFO)
 
 
-try:
-    xrange
-    text_type = unicode
-except NameError:
-    xrange = range
-    text_type = str
-
-
-class CuttingBoard(object):
+class CuttingBoard:
     """Allows observing a dataset according to the rules defined by a cubedef.
 
     `dataset` can be any iterable of python object, or callable returning one.
@@ -80,7 +66,7 @@ class CuttingBoard(object):
         # Filter the dataset if required
         filter_p = _make_filter_predicate(query, self.cubedef)
         if filter_p is not None:
-            dataset = ifilter(filter_p, dataset)
+            dataset = filter(filter_p, dataset)
 
         return dataset
 
@@ -94,7 +80,7 @@ class CuttingBoard(object):
         # Filter the dataset if required
         filter_p = _make_filter_predicate(query, self.cubedef)
         if filter_p is not None:
-            dataset = ifilter(filter_p, dataset)
+            dataset = filter(filter_p, dataset)
 
         return self._fill_slice(slice, query, dataset)
 
@@ -126,7 +112,7 @@ class CuttingBoard(object):
             root = bins[()]
 
         slice._data = root
-        logger.debug("NEW: slice %s for query %s" % (slice._ident, query.__dict__))
+        logger.debug(f"NEW: slice {slice._ident} for query {query.__dict__}")
         return slice
 
     def _make_empty_slice(self, query):
@@ -216,7 +202,7 @@ class CuttingBoard(object):
         d.appendleft(item)
 
 
-class SliceReuseStrategy(object):
+class SliceReuseStrategy:
     """Interface for strategies to use slices to create new slices."""
 
     def __init__(self, query):
@@ -400,7 +386,7 @@ class ManipulateSlice(SliceReuseStrategy):
 
         ds = self._unroll(slice)
         if filter_p is not None:
-            ds = ifilter(filter_p, ds)
+            ds = filter(filter_p, ds)
 
         bins = {}
         for okey, acc in ds:
@@ -481,7 +467,7 @@ class ManipulateSlice(SliceReuseStrategy):
             try:
                 op = _op_map[op]
             except KeyError:
-                raise errors.QueryError("unknown operator: '%s'" % op)
+                raise errors.QueryError(f"unknown operator: '{op}'")
 
             # we know for compatibility that the filter is on one of the slice axes
             idxs.append(qold.axes.index(name))
@@ -503,11 +489,11 @@ class ManipulateSlice(SliceReuseStrategy):
 			return %(ps)s
 		"""
                 % {
-                    "idxs": ", ".join("idx%d=idxs[%d]" % (i, i) for i in xrange(L)),
-                    "vs": ", ".join("v%d=vs[%d]" % (i, i) for i in xrange(L)),
-                    "ops": ", ".join("op%d=ops[%d]" % (i, i) for i in xrange(L)),
+                    "idxs": ", ".join("idx%d=idxs[%d]" % (i, i) for i in range(L)),
+                    "vs": ", ".join("v%d=vs[%d]" % (i, i) for i in range(L)),
+                    "ops": ", ".join("op%d=ops[%d]" % (i, i) for i in range(L)),
                     "ps": " and ".join(
-                        "op%d(key[idx%d], v%d)" % (i, i, i) for i in xrange(L)
+                        "op%d(key[idx%d], v%d)" % (i, i, i) for i in range(L)
                     ),
                 }
             ),
@@ -536,7 +522,7 @@ class ManipulateSlice(SliceReuseStrategy):
 CuttingBoard.reuse_strategies.append(ManipulateSlice)
 
 
-class Slice(object):
+class Slice:
     """Accumulation in a dataset's values along some of its labels."""
 
     _lock = RLock()
@@ -552,11 +538,11 @@ class Slice(object):
         self._zero_f, self._acc_f = _make_acc_function(query, cubedef)
 
         with Slice._lock:
-            self._ident = "s-%s" % Slice._n
+            self._ident = f"s-{Slice._n}"
             Slice._n += 1
 
     def __repr__(self):
-        return "<%s dim=%s at 0x%08X>" % (self.__class__.__name__, self.dim, id(self))
+        return f"<{self.__class__.__name__} dim={self.dim} at 0x{id(self):08X}>"
 
     def __getitem__(self, idx):
         """Remove one of the slice axes.
@@ -659,7 +645,7 @@ class Slice(object):
         return self._zero_f()
 
 
-class LabeledValue(object):
+class LabeledValue:
     __slots__ = ["label", "value", "record"]
 
     def __init__(self, label, value, record=None):
@@ -692,10 +678,10 @@ class LabeledValue(object):
         return self.label.cls(self.value, self.record)
 
     def __unicode__(self):
-        return text_type(self.pretty)
+        return str(self.pretty)
 
     def __str__(self):
-        return text_type(self.pretty)
+        return str(self.pretty)
 
     @property
     def excel(self):
@@ -724,7 +710,7 @@ def _make_acc_function(query, cubedef):
 	"""
         % {
             "accs": ", ".join(
-                "a%d=labels[%d].acc" % (i, i) for i in xrange(len(labels))
+                "a%d=labels[%d].acc" % (i, i) for i in range(len(labels))
             ),
             "items": ", ".join(
                 "%r: a%d()" % (label.name, i) for i, label in enumerate(labels)
@@ -744,7 +730,7 @@ def _make_acc_function(query, cubedef):
 	"""
                 % {
                     "es": ", ".join(
-                        "e%d=labels[%d].extract" % (i, i) for i in xrange(len(labels))
+                        "e%d=labels[%d].extract" % (i, i) for i in range(len(labels))
                     ),
                     "adds": "\n".join(
                         "\t\tacc[%r].add(e%d(record), record)" % (label.name, i)
@@ -892,7 +878,7 @@ def _make_filter_predicate(query, cubedef):
         try:
             op = _op_map[op]
         except KeyError:
-            raise errors.QueryError("unknown operator: '%s'" % op)
+            raise errors.QueryError(f"unknown operator: '{op}'")
 
         es.append(cubedef.get_label(name).extract)
         ops.append(op)
@@ -912,11 +898,11 @@ def _make_filter_predicate(query, cubedef):
 		return %(ps)s
 	"""
             % {
-                "es": ", ".join("e%d=es[%d]" % (i, i) for i in xrange(L)),
-                "vs": ", ".join("v%d=vs[%d]" % (i, i) for i in xrange(L)),
-                "ops": ", ".join("op%d=ops[%d]" % (i, i) for i in xrange(L)),
+                "es": ", ".join("e%d=es[%d]" % (i, i) for i in range(L)),
+                "vs": ", ".join("v%d=vs[%d]" % (i, i) for i in range(L)),
+                "ops": ", ".join("op%d=ops[%d]" % (i, i) for i in range(L)),
                 "ps": " and ".join(
-                    "op%d(e%d(record), v%d)" % (i, i, i) for i in xrange(L)
+                    "op%d(e%d(record), v%d)" % (i, i, i) for i in range(L)
                 ),
             }
         ),

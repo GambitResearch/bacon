@@ -40,7 +40,7 @@ class LoggingMiddleware(MiddlewareMixin):
     format = (
         "%(REMOTE_ADDR)s - %(REMOTE_USER)s [%(time)s] "
         '"%(REQUEST_METHOD)s %(REQUEST_URI)s %(HTTP_VERSION)s" '
-        '%(status)s %(bytes)s "%(HTTP_REFERER)s" "%(HTTP_USER_AGENT)s"'
+        '%(status)s %(content_len)s "%(HTTP_REFERER)s" "%(HTTP_USER_AGENT)s"'
     )
 
     def __new__(cls, **kwargs):
@@ -55,7 +55,7 @@ class LoggingMiddleware(MiddlewareMixin):
             except ImportError:
                 pass
 
-        rv = super(LoggingMiddleware, cls).__new__(LoggingMiddleware)
+        rv = super().__new__(LoggingMiddleware)
         LoggingMiddleware.__init__(rv, **kwargs)
         return rv
 
@@ -69,7 +69,6 @@ class LoggingMiddleware(MiddlewareMixin):
         set_logger_level=logging.DEBUG,
         disable_on_devel=True,
     ):
-
         # Because __init__ is called manually by __new__, it is invoked twice:
         # bail out early the second time as we are already configured.
         if self.__dict__:
@@ -118,18 +117,18 @@ class LoggingMiddleware(MiddlewareMixin):
         req_uri = request.get_full_path()
         method = request.method
 
-        bytes = response.get("Content-Length", None)
-        if bytes is None and isinstance(response.content, str):
-            bytes = len(response.content)
+        content_len = response.get("Content-Length", None)
+        if content_len is None and isinstance(response.content, str):
+            content_len = len(response.content)
 
         status_code = response.status_code
 
-        self.write_log(environ, method, req_uri, start, status_code, bytes)
+        self.write_log(environ, method, req_uri, start, status_code, content_len)
         return response
 
-    def write_log(self, environ, method, req_uri, start, status_code, bytes):
-        if bytes is None:
-            bytes = "-"
+    def write_log(self, environ, method, req_uri, start, status_code, content_len):
+        if content_len is None:
+            content_len = "-"
         if time.daylight:
             offset = time.altzone / 60 / 60 * -100
         else:
@@ -146,7 +145,7 @@ class LoggingMiddleware(MiddlewareMixin):
             "HTTP_VERSION": environ.get("SERVER_PROTOCOL"),
             "time": time.strftime("%d/%b/%Y:%H:%M:%S ", start) + offset,
             "status": status_code,
-            "bytes": bytes,
+            "content_len": content_len,
             "HTTP_REFERER": environ.get("HTTP_REFERER", "-"),
             "HTTP_USER_AGENT": environ.get("HTTP_USER_AGENT", "-"),
         }

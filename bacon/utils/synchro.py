@@ -1,7 +1,4 @@
 """Decorators to synchronize objects access in multithread environment."""
-
-from __future__ import with_statement
-
 from functools import wraps
 
 

@@ -42,7 +42,7 @@ def render_nav_json(panel):
                 [
                     (
                         "label",
-                        "%s %s %s" % (f.pretty_name, f.pretty_op, f.pretty_value),
+                        f"{f.pretty_name} {f.pretty_op} {f.pretty_value}",
                     ),
                     ("drop_url", panel.get_url(f.query_without)),
                     ("invert_url", panel.get_url(f.query_invert)),
@@ -107,7 +107,7 @@ def _render_widget(widget, panel):
         else:
             return f(rv, widget, panel)
 
-    raise NotImplementedError("can't render %r in json" % widget)
+    raise NotImplementedError(f"can't render {widget!r} in json")
 
 
 def _render_ButtonsWidget(rv, widget, panel):
@@ -352,7 +352,7 @@ def _render_pages(table, link):
     return rv
 
 
-class LinkMap(object):
+class LinkMap:
     def __init__(self):
         self.count = count()
         self.links = OrderedDict()
