@@ -1,4 +1,6 @@
 """CubeDef: an object that can describe how to navigate a dataset."""
+from __future__ import annotations
+
 import pytz
 import re
 from calendar import day_name, month_name
@@ -69,10 +71,9 @@ class CubeDef:
         self._measures = {}
         self._graph = nx.DiGraph()
 
-    def add_label(self, label):
+    def add_label(self, label: Label) -> Label:
         """Add a new label definition."""
-        if not isinstance(label, Label):
-            raise TypeError(f"expected 'Label' instance, {label!r} got instead")
+        assert isinstance(label, Label)
 
         name = label.name
         self._labels[name] = label
