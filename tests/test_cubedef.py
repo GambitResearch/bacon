@@ -33,7 +33,7 @@ class LabelTestCase(unittest.TestCase):
 class CubeDefTestCase(unittest.TestCase):
     def test_labels_must_be_labels(self):
         cd = CubeDef()
-        self.assertRaises(TypeError, cd.add_label, "year")
+        self.assertRaises(AssertionError, cd.add_label, "year")
 
     def test_get_label(self):
         cd = CubeDef()
@@ -53,7 +53,7 @@ class CubeDefTestCase(unittest.TestCase):
 
     def test_measures_must_be_labels(self):
         cd = CubeDef()
-        self.assertRaises(TypeError, cd.add_measure, "num")
+        self.assertRaises(AssertionError, cd.add_measure, "num")
         cd.add_measure(Label("year"))
 
     def test_get_measure(self):

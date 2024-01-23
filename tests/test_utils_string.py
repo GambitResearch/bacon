@@ -14,7 +14,7 @@ class StringsTestCase(unittest.TestCase):
         self.assertEqual(r"foo\\bar\/baz", strings.bsescape(r"foo\bar/baz", "/"))
 
     def test_bsunescape(self):
-        self.assertEqual("foo/bar", strings.bsunescape("foo\/bar"))
+        self.assertEqual("foo/bar", strings.bsunescape(r"foo\/bar"))
         self.assertEqual(r"foo/bar\baz", strings.bsunescape(r"foo\/bar\\baz"))
 
     def test_bssplit(self):
