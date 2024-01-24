@@ -73,7 +73,8 @@ class CubeDef:
 
     def add_label(self, label: Label) -> Label:
         """Add a new label definition."""
-        assert isinstance(label, Label)
+        if not isinstance(label, Label):
+            raise TypeError(f"expected 'Label' instance, {label!r} got instead")
 
         name = label.name
         self._labels[name] = label
