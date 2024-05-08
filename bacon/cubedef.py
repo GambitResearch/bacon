@@ -632,15 +632,33 @@ class IntTypeLabel(Label):
 
 
 class BoolTypeLabel(Label):
-    def parse(self, s, _v={"0": False, "1": True, "": None}):
+    def __init__(
+        self, *args, label_true="Yes", label_false="No", label_null="Unknown", **kwargs
+    ):
+        self.label_true = label_true
+        self.label_false = label_false
+        self.label_null = label_null
+        super().__init__(*args, **kwargs)
+
+    _q_to_b = {"0": False, "1": True, "": None}
+
+    def parse(self, s):
         # TODO, enforce, check, etc, raise a better error, etc
-        return _v[s]
+        return self._q_to_b[s]
 
-    def unparse(self, v, _f={False: "0", True: "1", None: ""}):
-        return _f[v]
+    _b_to_q = {False: "0", True: "1", None: ""}
 
-    def pretty(self, v, record=None, _f={False: "No", True: "Yes", None: "Unknown"}):
-        return _f[v]
+    def unparse(self, v):
+        return self._b_to_q[v]
+
+    def pretty(self, value, record=None):
+        if value is True:
+            return self.label_true
+        if value is False:
+            return self.label_false
+        if value is None:
+            return self.label_null
+        raise ValueError(value)
 
 
 class DatetimeDateTypeLabel(Label):
