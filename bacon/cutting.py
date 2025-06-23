@@ -246,7 +246,7 @@ class ReuseCachedSlice(SliceReuseStrategy):
 
         # Check the filters.
         # Because they are ANDed, I don't care about the order
-        if sorted(qold.filters) != sorted(qnew.filters):
+        if set(qold.filters) != set(qnew.filters):
             logger.debug("cache NOMATCH: filters: %r", qold.__dict__)
             return False
 
