@@ -13,7 +13,7 @@ from bacon import errors
 from bacon import accumulators as accs
 from bacon.graphs import ancestors, descendants
 from bacon.utils.strings import ensure_unicode
-from bacon.utils.dateutils import date_to_quarter
+from bacon.utils.dateutils import date_to_quarter, date_to_half
 
 
 class DataDef:
@@ -934,6 +934,52 @@ class QuarterNumLabel(DatetimePartLabel):
     @staticmethod
     def classify(date):
         return ((date.month - 1) // 3 * 3) + 1
+
+
+class HalfLabelMixin:
+    SUFFIX = "_half"
+    DEFAULT_TITLE = "Half"
+    DATETIME_FORMAT = "%Y-%m"
+
+    SQL_DATE_FIELD = "half"
+
+    def classify(self, d):
+        return date(d.year, ((d.month - 1) // 6 * 6) + 1, 1)
+
+    def pretty(self, d, record=None):
+        if not d:
+            return "Unknown"
+        half_num = (d.month - 1) // 6 + 1
+        return f"H{half_num}\xA0{d.year}"
+
+    def parse(self, s):
+        # parse -1 like "1 half ago"
+        if _re_delta.match(s):
+            return date_to_half(date.today(), int(s))
+        else:
+            d = super().parse(s)
+            return self.classify(d)
+
+
+class HalfLabel(HalfLabelMixin, DateTruncLabel):
+    pass
+
+
+class DatetimeHalfLabel(HalfLabelMixin, DatetimeTruncLabel):
+    pass
+
+
+class HalfNumLabel(DatetimePartLabel):
+    SUFFIX = "_halfnum"
+    DEFAULT_TITLE = "HalfNum"
+
+    SQL_DATE_FIELD = "half"
+    MAX_VALUE = 2
+    PREFIX = "H"
+
+    @staticmethod
+    def classify(date):
+        return ((date.month - 1) // 6 * 6) + 1
 
 
 class WeekLabelMixin:
