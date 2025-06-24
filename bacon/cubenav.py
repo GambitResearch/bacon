@@ -115,7 +115,7 @@ class Navigator:
             if op not in MULTI_ARG_OPS:
                 pretty_value = label.pretty(value, None)
             else:
-                pretty_value = ", ".join(label.pretty(v, None) for v in sorted(value))
+                pretty_value = ", ".join(sorted(label.pretty(v, None) for v in value))
             yield CurrentFilter(
                 name=name,
                 op=op,

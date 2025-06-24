@@ -551,7 +551,7 @@ class SetLabel(NullableLabel):
         elif value is None or value == ((None,)):
             return self.none_label
         else:
-            return "{%s}" % ",".join(sorted(value))
+            return "{%s}" % ",".join(sorted(str(v) for v in value))
 
     def add_q_filter(self, queryset, op, value):
         """Django query operations based on PostgreSQL ArrayField
