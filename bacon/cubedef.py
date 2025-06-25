@@ -329,7 +329,16 @@ class Label:
         return self.field.extract(record)
 
     def pretty(self, value, record=None):
-        return self.field.pretty(value, record)
+        try:
+            return self.field.pretty(value, record)
+        except Exception:
+            logger.exception(
+                "Could not format Label.field.pretty %r (%r, %r)",
+                self.field,
+                value,
+                record,
+            )
+            return "(error)"
 
     def __repr__(self):
         return f"<{type(self).__name__} {self.name!r} at 0x{id(self):08X}>"
