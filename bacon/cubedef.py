@@ -1,4 +1,5 @@
 """CubeDef: an object that can describe how to navigate a dataset."""
+
 from __future__ import annotations
 
 import pytz
@@ -862,7 +863,7 @@ class MonthLabelMixin:
         return date(d.year, d.month, 1)
 
     def pretty(self, d, record=None):
-        return d and d.strftime("%b\xA0%Y") or "Unknown"
+        return d and d.strftime("%b\xa0%Y") or "Unknown"
 
     def parse(self, s):
         # parse -6 like "6 months ago"
@@ -913,7 +914,7 @@ class QuarterLabelMixin:
         if not d:
             return "Unknown"
         quarter_num = (d.month - 1) // 3 + 1
-        return f"Q{quarter_num}\xA0{d.year}"
+        return f"Q{quarter_num}\xa0{d.year}"
 
     def parse(self, s):
         # parse -1 like "1 quarter ago"
@@ -1008,7 +1009,7 @@ class DayLabelMixin:
         return date(d.year, d.month, d.day)
 
     def pretty(self, d, record=None):
-        return d and d.strftime("%a\xA0%Y-%m-%d") or "Unknown"
+        return d and d.strftime("%a\xa0%Y-%m-%d") or "Unknown"
 
     def parse(self, s):
         # parse -30 like "30 days ago"
@@ -1067,7 +1068,7 @@ class HourLabel(DatetimeTruncLabel):
         return datetime(d.year, d.month, d.day, hour=getattr(d, "hour", 0))
 
     def pretty(self, d, record=None):
-        return d and d.strftime("%a\xA0%Y-%m-%dT%H") or "Unknown"
+        return d and d.strftime("%a\xa0%Y-%m-%dT%H") or "Unknown"
 
     def parse(self, s):
         # parse -30 like "30 hours ago"

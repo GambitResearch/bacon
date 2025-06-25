@@ -1,4 +1,5 @@
 """Object to accumulate values"""
+
 from math import sqrt
 
 

@@ -1,4 +1,5 @@
 """Objects to build visualizations of query slices."""
+
 from math import ceil
 from itertools import chain
 
