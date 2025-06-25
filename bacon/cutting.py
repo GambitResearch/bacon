@@ -1,4 +1,5 @@
 """Define what a cutting board and a slice are."""
+
 import re
 import operator
 from copy import copy, deepcopy
@@ -671,7 +672,16 @@ class LabeledValue:
 
     @property
     def pretty(self):
-        return self.label.pretty(self.value, record=self.record)
+        try:
+            return self.label.pretty(self.value, record=self.record)
+        except Exception:
+            logger.exception(
+                "Could not format LabeledValue.label.pretty %r (%r, %r)",
+                self.label,
+                self.value,
+                self.record,
+            )
+            return "(error)"
 
     @property
     def cls(self):

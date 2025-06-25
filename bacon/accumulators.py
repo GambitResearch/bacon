@@ -1,5 +1,10 @@
 """Object to accumulate values"""
+
 from math import sqrt
+import logging
+
+
+logger = logging.getLogger("bacon.accumulators")
 
 
 class Accumulator:
@@ -336,7 +341,10 @@ def LabeledAcc(getter, acc):
 
             if self.label == other.label:
                 self.acc += other.acc
-            else:  # self.label != other.label:
+            else:
+                logger.warning(
+                    "Inconsistent: labels don't match %r != %r", self.label, other.label
+                )
                 self.acc = Inconsistent
 
             return self
