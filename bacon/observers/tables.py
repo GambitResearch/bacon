@@ -31,17 +31,17 @@ class PaginatedViewer(Viewer):
             tokens = s.split(":")
             try:
                 limit = int(tokens[0])
-            except:
+            except Exception:
                 pass
 
             try:
                 offset = int(tokens[1])
-            except:
+            except Exception:
                 pass
 
             try:
                 nrows = int(tokens[2])
-            except:
+            except Exception:
                 pass
 
         return limit, offset, nrows
@@ -289,7 +289,7 @@ class Table1D(UrlMaker, BaseTableRenderer):
             try:
                 for name in self.record_values():
                     self._totals[name] += record[name]
-            except:
+            except Exception:
                 # if one aggregate fails, remove all aggregates
                 self._totals = Inconsistent
 
