@@ -2,6 +2,7 @@
 
 from math import ceil
 from itertools import chain
+import logging
 
 from collections import defaultdict
 
@@ -12,6 +13,9 @@ from bacon.cubenav import UrlMaker
 from bacon.accumulators import Inconsistent
 from collections import namedtuple
 from bacon.utils import cache
+
+
+logger = logging.getLogger("bacon.observers.tables")
 
 
 class PaginatedViewer(Viewer):
@@ -291,6 +295,12 @@ class Table1D(UrlMaker, BaseTableRenderer):
                     self._totals[name] += record[name]
             except Exception:
                 # if one aggregate fails, remove all aggregates
+                logger.exception(
+                    "Inconsistent: Table1D %r _iter_row(%r) at %r",
+                    self,
+                    slice,
+                    self._totals,
+                )
                 self._totals = Inconsistent
 
         for l in self.value_titles():
